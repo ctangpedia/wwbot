@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const RandomOrg = require('random-org');//optional
+const RandomOrg = require('random-org');// optional
 require('dotenv').config();
 const client = new Discord.Client();
 

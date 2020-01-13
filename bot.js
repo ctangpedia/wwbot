@@ -234,6 +234,13 @@ client.on('message', msg => {
         }
       break;
     }
+  }else if(msg.content.startsWith("uh huh let's add the bot into vc then shall we?")){
+    let vc = msg.member.voiceChannel;
+    if(!vc){return msg.reply("get into a vc first you idiot");}
+    else{vc.join().then(con=>{
+      let dispatcher = con.playFile('./shostakovich.mp3');
+      dispatcher.on("end",end=>{vc.leave()})
+    }).catch(e => console.error(e))}
   }
 });
 

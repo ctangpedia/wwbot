@@ -11,6 +11,8 @@
   "dependencies": {
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
+    "ffmpeg-binaries": "^4.0.0",
+    "node-opus": "^0.3.3",
     "random-org": "^2.0.1"
   }
 }

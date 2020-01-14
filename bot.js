@@ -233,14 +233,23 @@ client.on('message', msg => {
           msg.channel.send("Usage Instructions:\n!purge [number of messages you intend to delete in bulk]");
         }
       break;
+      case 'myid':
+        msg.reply(msg.author.id);
+      break;
     }
-  }else if(msg.content.startsWith("uh huh let's add the bot into vc then shall we?")){
+  }else if(msg.content.startsWith("lemme ")&&msg.author.id=="531822031059288074"){
     let vc = msg.member.voiceChannel;
-    if(!vc){return msg.reply("get into a vc first you idiot");}
-    else{vc.join().then(con=>{
-      let dispatcher = con.playFile('./shostakovich.mp3');
-      dispatcher.on("end",end=>{vc.leave()})
-    }).catch(e => console.error(e))}
+    if(!vc){return msg.reply("get into a vc first");}
+    else{
+      switch(msg.content.replace(/lemme /,"")){
+        case 'add my bot into vc and play a random mp3 from my computer':
+          vc.join().then(con=>{
+            let dispatcher = con.playFile('./shostakovich.mp3');
+            dispatcher.on("end",end=>{vc.leave()})
+          }).catch(e => console.error(e))
+        break;
+      }
+    }
   }
 });
 

@@ -62,11 +62,11 @@ client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user.setPresence({
     game: {
-        name: '2 servers | !help'
+        name: '狼人殺已經壽終正寢。The server is dead. | 2 servers | !help'
     }
   });
   client.channels.find(x => x.name === 'manage').send("Reconnected!");
-  client.channels.find(x => x.name === 'bot').send("Reconnected!");
+  //client.channels.find(x => x.name === 'bot').send("Reconnected!"); //ugh
 });
 
 client.on('message', msg => {
@@ -248,7 +248,22 @@ client.on('message', msg => {
             dispatcher.on("end",end=>{vc.leave()})
           }).catch(e => console.error(e))
         break;
+        case 'simply add my bot into vc':
+          vc.join();
+        break;
+        case 'kick the bot out of vc':
+          vc.leave();
+        break;
       }
+    }
+  }else if(msg.content.startsWith("What does the bot say?")&&(msg.author.id=="531822031059288074"||msg.author.id=="149763661630537729")){
+    let vc = msg.member.voiceChannel;
+    if(!vc){return msg.reply("get into a vc first");}
+    else{
+        vc.join().then(con=>{
+          let dispatcher = con.playFile('./voices/goodpeople.mp3');
+          dispatcher.on("end",end=>{vc.leave()})
+        }).catch(e => console.error(e))
     }
   }
 });

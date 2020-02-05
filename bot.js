@@ -14,15 +14,22 @@ const se = "seer";
 const ht = "hunter";
 const id = "idiot";
 const kt = "knight";
+const whvl = "武漢民眾";
+const whwf = "帶菌者";
+const whse = "醫生";
+const whht = "暴躁病患";
+const whwc = "民俗老中醫";
+const whkt = "海關檢疫員";
 var roles = [];
 var thisGuild;
 var wfs = [];
 var wdc = []; //wolf discussion channel
 roles["w2v2wsi"] = [wf,wf,vl,vl,wc,se,id];
 roles["w2v2wsh"] = [wf,wf,vl,vl,wc,se,ht];
+roles["wuhan-w2v2wsh"] = [whwf,whwf,whvl,whvl,whwc,whse,whht];
 roles["w2v2wsk"] = [wf,wf,vl,vl,wc,se,kt];
 roles["meh"] = [wb,wf,vl,vl,vl,se,wc,id];
-roles["meh8"] = [wk,wf,wf,vl,vl,se,wc,ht];
+roles["meht"] = [wk,wf,wf,vl,vl,se,wc,ht];
 roles["w3v3wsh"] = [wf,wf,wf,vl,vl,vl,wc,se,ht];
 roles["wkw2v3wshk"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,kt];
 roles["wkw3v4wshk"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,kt];
@@ -117,6 +124,32 @@ client.on('message', msg => {
               );
             }
             thisGuild.channels.find(x => x.name === 'bot-log').send("7");
+            thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+            msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
+          break;
+          case 'meh':
+          case 'meht':
+            roles[args[0]] = shuffle(roles[args[0]]);
+            for(var i=0;i<8;i++){
+              c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
+            }
+            wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
+            list[msg.guild.id] = "";
+            wfs[msg.guild.id]=[];
+            for(var j=0;j<8;j++){
+              c[j].send(roles[args[0]][j]);
+              if(roles[args[0]][j]==wf){
+                wfs[msg.guild.id].push(j);
+              }
+              list[msg.guild.id] += String(j+1)+". "+roles[args[0]][j]+"\n";
+            }
+            for(var k=0;k<wfs[msg.guild.id].length;k++){
+              wdc[msg.guild.id].overwritePermissions(
+                msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
+                { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
+              );
+            }
+            thisGuild.channels.find(x => x.name === 'bot-log').send("8");
             thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
             msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
           break;

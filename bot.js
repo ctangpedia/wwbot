@@ -3,6 +3,8 @@ const RandomOrg = require('random-org');// optional
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'))
 
 require('dotenv').config();
 const port = process.env.PORT;
@@ -318,7 +320,11 @@ client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
 
 client.login();
-app.get('/', (req, res) => res.send('<h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p>'));
+app.get('/', (req, res) => res.send('<!doctype html>\n<head>\n<title>WBCP backend</title>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n</head>\n<body><h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p></body>'));
 app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.json({response: 200});});
-app.post('/presence', (req,res) => {});
+app.post('/presence', (req,res) => {res.json({presence: req.body.presence});client.user.setPresence({
+  game: {
+      name: req.body.presence
+  }
+});});
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const RandomOrg = require('random-org');// optional
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 
 require('dotenv').config();
@@ -70,6 +71,10 @@ function shuffle(array) {
   return array;
 }
 // credits to CoolAJ86 @ StackOverflow https://stackoverflow.com/a/2450976
+
+const sendroles = (msg,players) => {
+  console.log(players);
+}
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -315,4 +320,5 @@ client.on("warn", (e) => console.warn(e));
 client.login();
 app.get('/', (req, res) => res.send('<h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p>'));
 app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.json({response: 200});});
+app.post('/presence', (req,res) => {});
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

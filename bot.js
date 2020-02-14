@@ -2,9 +2,9 @@ const Discord = require("discord.js");
 const RandomOrg = require('random-org');// optional
 const express = require('express');
 const app = express();
-const port = 42069;
 
 require('dotenv').config();
+const port = process.env.PORT;
 const client = new Discord.Client();
 
 var c = [];
@@ -314,5 +314,5 @@ client.on("warn", (e) => console.warn(e));
 
 client.login();
 app.get('/', (req, res) => res.send('<h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p>'));
-app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.send('');});
+app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.json({response: 200});});
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

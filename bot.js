@@ -136,6 +136,7 @@ client.on('message', msg => {
             }
             thisGuild.channels.find(x => x.name === 'bot-log').send("7");
             thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
             msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
           break;
           case 'meh':
@@ -162,6 +163,7 @@ client.on('message', msg => {
             }
             thisGuild.channels.find(x => x.name === 'bot-log').send("8");
             thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
             msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
           break;
           case 'w3v3wsh':
@@ -187,6 +189,7 @@ client.on('message', msg => {
             }
             thisGuild.channels.find(x => x.name === 'bot-log').send("9");
             thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
             msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
           break;
           case 'wkw2v3wshk':
@@ -212,6 +215,7 @@ client.on('message', msg => {
             }
             thisGuild.channels.find(x => x.name === 'bot-log').send("10");
             thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
             msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
           break;
           case 'wkw3v4wshk':
@@ -237,6 +241,7 @@ client.on('message', msg => {
             }
             thisGuild.channels.find(x => x.name === 'bot-log').send("12");
             thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
             msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
           break;
           default:

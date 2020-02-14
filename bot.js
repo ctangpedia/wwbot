@@ -1,5 +1,9 @@
 const Discord = require("discord.js");
 const RandomOrg = require('random-org');// optional
+const express = require('express');
+const app = express();
+const port = 42069;
+
 require('dotenv').config();
 const client = new Discord.Client();
 
@@ -26,7 +30,7 @@ var wfs = [];
 var wdc = []; //wolf discussion channel
 roles["w2v2wsi"] = [wf,wf,vl,vl,wc,se,id];
 roles["w2v2wsh"] = [wf,wf,vl,vl,wc,se,ht];
-roles["wuhan-w2v2wsh"] = [whwf,whwf,whvl,whvl,whwc,whse,whht];
+roles["wuhan-w2v2wsk"] = [whwf,whwf,whvl,whvl,whwc,whse,whkt];
 roles["w2v2wsk"] = [wf,wf,vl,vl,wc,se,kt];
 roles["meh"] = [wb,wf,vl,vl,vl,se,wc,id];
 roles["meht"] = [wk,wf,wf,vl,vl,se,wc,ht];
@@ -46,7 +50,6 @@ const helpEmbed = new Discord.RichEmbed()
     .addField('Available commands for players with Dead role', '!listroles')
   	.setTimestamp()
   	.setFooter('Powered by Werewolf Bot', 'https://discordapp.com/assets/1cbd08c76f8af6dddce02c5138971129.png');
-
 
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
@@ -72,10 +75,10 @@ client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user.setPresence({
     game: {
-        name: '狼人殺已經壽終正寢。The server is dead. | 2 servers | !help'
+        name: '2 servers | !help'
     }
   });
-  client.channels.find(x => x.name === 'manage').send("Reconnected!");
+  //client.channels.find(x => x.name === 'manage').send("Reconnected!");
   //client.channels.find(x => x.name === 'bot').send("Reconnected!"); //ugh
 });
 
@@ -101,6 +104,7 @@ client.on('message', msg => {
           thisGuild=client.guilds.find(x => x.id === msg.guild.id);
         switch (args[0]) {
           case 'w2v2wsh':
+          case 'wuhan-w2v2wsh':
           case 'w2v2wsk':
           case 'w2v2wsi':
             roles[args[0]] = shuffle(roles[args[0]]);
@@ -309,3 +313,6 @@ client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
 
 client.login();
+app.get('/', (req, res) => res.send('<h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p>'));
+app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.send('');});
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));

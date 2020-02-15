@@ -74,6 +74,11 @@ function shuffle(array) {
 }
 // credits to CoolAJ86 @ StackOverflow https://stackoverflow.com/a/2450976
 
+/**
+ * Send out roles to respective channels and grant permissions to wolf discussion channel.
+ * @param {Message} msg - The message/command sent to trigger this function.
+ * @param {string} code - role code, see roles[].
+ */
 const sendroles = (msg,code) => {
   roles[code] = shuffle(roles[code]);
   for(var i=0;i<roles[code].length;i++){

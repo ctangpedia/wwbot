@@ -29,7 +29,8 @@ const whwc = "民俗老中醫";
 const whkt = "海關檢疫員";
 var roles = [];
 var thisGuild;
-var wfs = [];
+var wfs = []; //wolves
+var seer = [];
 var wdc = []; //wolf discussion channel
 roles["w2v2wsi"] = [wf,wf,vl,vl,wc,se,id];
 roles["w2v2wsh"] = [wf,wf,vl,vl,wc,se,ht];
@@ -97,6 +98,9 @@ const sendroles = (msg,code) => {
     if(roles[code][j]==wf||roles[code][j]==wk||roles[code][j]==whwf||roles[code][j]==whwk){
       wfs[msg.guild.id].push(j);
     }
+    if(roles[code][j]==se||roles[code][j]==whse){
+      seer[msg.guild.id]=j;
+    }
     list[msg.guild.id] += String(j+1)+". "+roles[code][j]+"\n";
   }
   for(var k=0;k<wfs[msg.guild.id].length;k++){
@@ -109,6 +113,8 @@ const sendroles = (msg,code) => {
   thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
   thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
   msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
+  wdc[msg.guild.id].send("Good evening, wolves! Your mission is to kill the good people. To do so, use the command /kill as follows:\n```/kill <no.>```where `<no.>` is the number of the player you want to kill.\n\n狼人們，晚上好！你們的任務是要殺死好人。想要達成任務，你們可以使用指令/kill，使用方法如下：```/kill <no.>````<no.>`為你們想殺的玩家號碼。");
+  thisGuild.channels.find(x => x.name === String(parseInt(seer[msg.guild.id])+1)+'號').send("Good evening, seer! You can check other players and see if they are good (villagers or gods) or bad (wolves). You can check one player per night. To check a player, use the command /check as follows:\n```/check <no.>```where `<no.>` is the number of the player you want to check.");
 }
 
 client.on("ready", () => {
@@ -259,11 +265,17 @@ client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
 
 client.login();
-app.get('/', (req, res) => res.send('<!doctype html>\n<head>\n<title>WBCP backend</title>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n</head>\n<body><h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p></body>'));
+app.get('/', (req, res) => res.send('<!doctype html>\n<head>\n<title>WBCP backend</title>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n</head>\n<body><h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p><h3>Quick Links</h3><ul><li><a href="/guilds.html">Joined Guilds</a></li><li><a href="/presence.html">Set Presence</a></li></ul></body>'));
 app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.json({response: 200});});
 app.post('/presence', (req,res) => {res.json({presence: req.body.presence});client.user.setPresence({
   game: {
       name: req.body.presence
   }
 });});
+app.get('/guilds', (req,res) => {
+
+  res.json(Array.from(client.guilds.keys()));
+  //console.log(client.guilds);
+  //res.send('<!doctype html>\n<html>\n  <head>\n    <title>Guilds</title>\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n  </head>\n  <body>\n  </body>\n</html>');
+});
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

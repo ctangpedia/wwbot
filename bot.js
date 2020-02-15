@@ -265,13 +265,17 @@ client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
 
 client.login();
-app.get('/', (req, res) => res.send('<!doctype html>\n<head>\n<title>WBCP backend</title>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n</head>\n<body><h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p><h3>Quick Links</h3><ul><li><a href="/guilds.html">Joined Guilds</a></li><li><a href="/presence.html">Set Presence</a></li></ul></body>'));
+app.get('/', (req, res) => res.send('<!doctype html>\n<head>\n<title>WBCP backend</title>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n</head>\n<body><h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p><h3>Quick Links</h3><ul><li><a href="/guilds.html">Joined Guilds</a></li><li><a href="/presence.html">Set Presence</a></li><li><a href="/send.html">Send a message</a></li></ul></body>'));
 app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.json({response: 200});});
+app.get('/reconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Reconnected!");res.json({response: 200});});
 app.post('/presence', (req,res) => {res.json({presence: req.body.presence});client.user.setPresence({
   game: {
       name: req.body.presence
   }
 });});
+app.post('/send', (req,res) => {
+  client.channels.find(x => x.name === 'bot').send(req.body.message);res.json({response: 200, message: req.body.message});
+});
 app.get('/guilds', (req,res) => {
 
   res.json(Array.from(client.guilds.keys()));

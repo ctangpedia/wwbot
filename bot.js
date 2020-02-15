@@ -217,6 +217,28 @@ client.on('message', msg => {
           dispatcher.on("end",end=>{vc.leave()})
         }).catch(e => console.error(e))
     }
+  }else if (msg.content.substring(0,1) == "/"){
+    var args = msg.content.substring(1).split(' ');
+    var cmd = args[0];
+    args = args.splice(1);
+    switch (cmd) {
+      case 'day':
+        for(var k=0;k<wfs[msg.guild.id].length;k++){
+          wdc[msg.guild.id].overwritePermissions(
+            msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
+            { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': false }
+          );
+        }
+      break;
+      case 'night':
+        for(var k=0;k<wfs[msg.guild.id].length;k++){
+          wdc[msg.guild.id].overwritePermissions(
+            msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
+            { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
+          );
+        }
+      break;
+    }
   }
 });
 

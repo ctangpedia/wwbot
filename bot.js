@@ -233,6 +233,7 @@ client.on('message', msg => {
     args = args.splice(1);
     switch (cmd) {
       case 'day':
+        if(typeof wfs[msg.guild.id]==="undefined"){return msg.reply("start a new game first!");}
         for(var k=0;k<wfs[msg.guild.id].length;k++){
           wdc[msg.guild.id].overwritePermissions(
             msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
@@ -241,6 +242,7 @@ client.on('message', msg => {
         }
       break;
       case 'night':
+        if(typeof wfs[msg.guild.id]==="undefined"){return msg.reply("start a new game first!");}
         for(var k=0;k<wfs[msg.guild.id].length;k++){
           wdc[msg.guild.id].overwritePermissions(
             msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),

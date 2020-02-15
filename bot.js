@@ -24,7 +24,7 @@ const kt = "knight";
 const whvl = "武漢民眾";
 const whwf = "帶菌者";
 const whse = "醫生";
-const whht = "暴躁病患";
+const whwk = "暴躁病患";
 const whwc = "民俗老中醫";
 const whkt = "海關檢疫員";
 var roles = [];
@@ -74,8 +74,31 @@ function shuffle(array) {
 }
 // credits to CoolAJ86 @ StackOverflow https://stackoverflow.com/a/2450976
 
-const sendroles = (msg,players) => {
-  console.log(players);
+const sendroles = (msg,code) => {
+  roles[code] = shuffle(roles[code]);
+  for(var i=0;i<roles[code].length;i++){
+    c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
+  }
+  wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
+  list[msg.guild.id] = "";
+  wfs[msg.guild.id]=[];
+  for(var j=0;j<roles[code].length;j++){
+    c[j].send(roles[code][j]);
+    if(roles[code][j]==wf||roles[code][j]==wk||roles[code][j]==whwf||roles[code][j]==whwk){
+      wfs[msg.guild.id].push(j);
+    }
+    list[msg.guild.id] += String(j+1)+". "+roles[code][j]+"\n";
+  }
+  for(var k=0;k<wfs[msg.guild.id].length;k++){
+    wdc[msg.guild.id].overwritePermissions(
+      msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
+      { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
+    );
+  }
+  thisGuild.channels.find(x => x.name === 'bot-log').send(roles[code].length);
+  thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+  thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
+  msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
 }
 
 client.on("ready", () => {
@@ -114,135 +137,12 @@ client.on('message', msg => {
           case 'wuhan-w2v2wsh':
           case 'w2v2wsk':
           case 'w2v2wsi':
-            roles[args[0]] = shuffle(roles[args[0]]);
-            for(var i=0;i<7;i++){
-              c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
-            }
-            wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
-            list[msg.guild.id] = "";
-            wfs[msg.guild.id]=[];
-            for(var j=0;j<7;j++){
-              c[j].send(roles[args[0]][j]);
-              if(roles[args[0]][j]==wf){
-                wfs[msg.guild.id].push(j);
-              }
-              list[msg.guild.id] += String(j+1)+". "+roles[args[0]][j]+"\n";
-            }
-            for(var k=0;k<wfs[msg.guild.id].length;k++){
-              wdc[msg.guild.id].overwritePermissions(
-                msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
-                { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
-              );
-            }
-            thisGuild.channels.find(x => x.name === 'bot-log').send("7");
-            thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
-            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
-            msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
-          break;
           case 'meh':
           case 'meht':
-            roles[args[0]] = shuffle(roles[args[0]]);
-            for(var i=0;i<8;i++){
-              c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
-            }
-            wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
-            list[msg.guild.id] = "";
-            wfs[msg.guild.id]=[];
-            for(var j=0;j<8;j++){
-              c[j].send(roles[args[0]][j]);
-              if(roles[args[0]][j]==wf){
-                wfs[msg.guild.id].push(j);
-              }
-              list[msg.guild.id] += String(j+1)+". "+roles[args[0]][j]+"\n";
-            }
-            for(var k=0;k<wfs[msg.guild.id].length;k++){
-              wdc[msg.guild.id].overwritePermissions(
-                msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
-                { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
-              );
-            }
-            thisGuild.channels.find(x => x.name === 'bot-log').send("8");
-            thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
-            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
-            msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
-          break;
           case 'w3v3wsh':
-            roles[args[0]] = shuffle(roles[args[0]]);
-            for(var i=0;i<9;i++){
-              c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
-            }
-            wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
-            list[msg.guild.id] = "";
-            wfs[msg.guild.id]=[];
-            for(var j=0;j<9;j++){
-              c[j].send(roles[args[0]][j]);
-              if(roles[args[0]][j]==wf){
-                wfs[msg.guild.id].push(j);
-              }
-              list[msg.guild.id] += String(j+1)+". "+roles[args[0]][j]+"\n";
-            }
-            for(var k=0;k<wfs[msg.guild.id].length;k++){
-              wdc[msg.guild.id].overwritePermissions(
-                msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
-                { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
-              );
-            }
-            thisGuild.channels.find(x => x.name === 'bot-log').send("9");
-            thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
-            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
-            msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
-          break;
           case 'wkw2v3wshk':
-            roles[args[0]] = shuffle(roles[args[0]]);
-            for(var i=0;i<10;i++){
-              c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
-            }
-            wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
-            list[msg.guild.id] = "";
-            wfs[msg.guild.id]=[];
-            for(var j=0;j<10;j++){
-              c[j].send(roles[args[0]][j]);
-              if(roles[args[0]][j]==wf){
-                wfs[msg.guild.id].push(j);
-              }
-              list[msg.guild.id] += String(j+1)+". "+roles[args[0]][j]+"\n";
-            }
-            for(var k=0;k<wfs[msg.guild.id].length;k++){
-              wdc[msg.guild.id].overwritePermissions(
-                msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
-                { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
-              );
-            }
-            thisGuild.channels.find(x => x.name === 'bot-log').send("10");
-            thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
-            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
-            msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
-          break;
           case 'wkw3v4wshk':
-            roles[args[0]] = shuffle(roles[args[0]]);
-            for(var i=0;i<12;i++){
-              c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
-            }
-            wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
-            list[msg.guild.id] = "";
-            wfs[msg.guild.id]=[];
-            for(var j=0;j<12;j++){
-              c[j].send(roles[args[0]][j]);
-              if(roles[args[0]][j]==wf){
-                wfs[msg.guild.id].push(j);
-              }
-              list[msg.guild.id] += String(j+1)+". "+roles[args[0]][j]+"\n";
-            }
-            for(var k=0;k<wfs[msg.guild.id].length;k++){
-              wdc[msg.guild.id].overwritePermissions(
-                msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
-                { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
-              );
-            }
-            thisGuild.channels.find(x => x.name === 'bot-log').send("12");
-            thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
-            thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
-            msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
+            sendroles(msg,args[0]);
           break;
           default:
             msg.reply("invalid roles id! see #bot-documentation for help");

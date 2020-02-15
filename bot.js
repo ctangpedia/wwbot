@@ -54,6 +54,12 @@ const helpEmbed = new Discord.RichEmbed()
   	.setTimestamp()
   	.setFooter('Powered by Werewolf Bot', 'https://discordapp.com/assets/1cbd08c76f8af6dddce02c5138971129.png');
 
+/**
+ * Shuffles the given array
+ * @author CoolAJ86 via StackOverflow https://stackoverflow.com/a/2450976
+ * @param {Array} array - an array to shuffle
+ * @returns {Array} the shuffled array
+ */
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -72,7 +78,6 @@ function shuffle(array) {
 
   return array;
 }
-// credits to CoolAJ86 @ StackOverflow https://stackoverflow.com/a/2450976
 
 /**
  * Send out roles to respective channels and grant permissions to wolf discussion channel.

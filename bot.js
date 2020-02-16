@@ -139,6 +139,9 @@ client.on('message', msg => {
       case 'help':
         msg.channel.send(helpEmbed);
       break;
+      case 'mchelp':
+        msg.channel.send("<@&629587170050703381>, https://discordapp.com/channels/629570161032036373/653957410607595530/663671180602900500");
+      break;
       case 'role':
         //if (msg.guild.id=="629570161032036373"){msg.reply("The bot has been temporarily disabled on this server by the author.");return;}
       /*rorg.generateIntegers({ min: 1, max: 99, n: 2 })

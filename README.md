@@ -7,6 +7,10 @@ Discord Werewolf Bot source code
 - Allow "Dead" players to view role list
 - Assist Ad Bot
 
+## System requirements
+- Memory: 128MB should be more than enough
+- Storage: around 128MB; if you don't need audio, you can remove the related commands and remove the packages `ffmpeg-binaries` and `ffmpeg-static`.
+
 ## Run the bot yourself
 1. Create a Discord bot, add your bot to a server and get the bot token. You can follow [this tutorial](https://anidiots.guide/getting-started/getting-started-long-version)
 2. Download node.js, if you haven't :facepalm: (google it if you don't know how to)
@@ -16,4 +20,4 @@ Discord Werewolf Bot source code
 6. `node bot.js`
 
 ## Control Panel
-The bot comes with a web-based control panel accessible locally. Work in progress...
+The bot comes with a web-based control panel accessible locally. You can disable it in .env with `APIENABLED=FALSE`.

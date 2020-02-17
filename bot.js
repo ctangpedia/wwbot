@@ -193,7 +193,32 @@ client.on('message', msg => {
           );
         }
         msg.guild.members.forEach((member) => member.removeRole(msg.guild.roles.find(x=>x.name==="Dead")));
-        msg.reply("done!");
+        msg.reply("done! If you want me to send out the role list **here**, click on the :white_check_mark: reaction.").then((botmsg)=>{
+          botmsg.react('✅').then(()=>{botmsg.react('❎')});
+          const filter = (reaction,user) => {
+            return ['✅','❎'].includes(reaction.emoji.name) && user.id === msg.author.id;
+          };
+          botmsg.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
+          	.then(collected => {
+          		const reaction = collected.first();
+
+          		if (reaction.emoji.name === '✅') {
+          			if(list[msg.guild.id]){msg.channel.send(list[msg.guild.id]);}
+                else{
+                  msg.reply("no WWE games initiated after the bot reconnected! Fetching list from another source...").then(()=>{
+                    client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === "bot-roles")
+                      .fetchMessages({limit:1})
+                      .then(messages => {msg.channel.send(messages.first().content);botmsg.clearReactions();});
+                  });
+                }
+          		} else {
+          			botmsg.edit(`<@${msg.author.id}>, done! You can view the role list in <#645150806848438303>`).then(msg=>msg.clearReactions()).catch(console.error);//msg.reply('never mind. You can still find the role list in <#645150806848438303>');//... in #spectators
+          		}
+          	})
+          	.catch(collected => {
+          		console.log(collected);
+          	});
+        });
       break;
       case 'purge':
         //if (msg.guild.id=="629570161032036373"){msg.reply("this command has been temporarily disabled on this server by the author.");return;}

@@ -19,6 +19,7 @@
         JSON.parse(xhr.responseText).forEach(id => document.getElementById("output").innerHTML += `<li>${id}</li>`)
       }
     };
+    //xhr.setRequestHeader("X-WBCP-TOKEN", "");
     xhr.send();}
     document.getElementById("refresh").addEventListener("click",()=>{
       document.getElementById("output").innerHTML = "";

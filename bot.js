@@ -43,6 +43,8 @@ roles["wkw2v3wshk"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,kt];
 roles["wkw3v4wshk"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,kt];
 var list = [];
 
+const statusCode = ["READY","CONNECTING","RECONNECTING","IDLE","NEARLY","DISCONNECTED"];
+
 var rorg = new RandomOrg({ apiKey: process.env.RORG });//optional
 
 const helpEmbed = new Discord.RichEmbed()
@@ -268,6 +270,20 @@ client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
 
 client.login();
+
+if(!!process.env.APIAUTH){
+  app.use((req,res,next)=>{
+    if(req.get("X-WBCP-TOKEN")!=process.env.APIAUTH){
+      res.status(401);
+      res.json({
+        response: 401,
+        error: "The provided token in the request headers does not match the APIAUTH token set in the environment variables."
+      });
+    }else{
+      next();
+    }
+  });
+}
 app.get('/', (req, res) => res.send('<!doctype html>\n<head>\n<title>WBCP backend</title>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n</head>\n<body><h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p><h3>Quick Links</h3><ul><li><a href="/guilds.html">Joined Guilds</a></li><li><a href="/presence.html">Set Presence</a></li><li><a href="/send.html">Send a message</a></li></ul></body>'));
 app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.json({response: 200});});
 app.get('/reconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Reconnected!");res.json({response: 200});});
@@ -285,4 +301,6 @@ app.get('/guilds', (req,res) => {
   //console.log(client.guilds);
   //res.send('<!doctype html>\n<html>\n  <head>\n    <title>Guilds</title>\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n  </head>\n  <body>\n  </body>\n</html>');
 });
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.get('/ping', (req,res)=>{res.json({response: 200, ping: client.ping});});
+app.get('/status', (req,res)=>{res.json({response: 200, status: client.status, parsedStatus: statusCode[client.status]});});
+if(process.env.APIENABLED){app.listen(port, () => console.log(`WBCP listening on port ${port}!`));}

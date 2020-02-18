@@ -123,7 +123,7 @@ client.on("ready", () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user.setPresence({
     game: {
-        name: '2 servers | !help'
+        name: 'help: https://wwbot.ctptools.ga/ww/usage.html'
     }
   });
   //client.channels.find(x => x.name === 'manage').send("Reconnected!");
@@ -203,7 +203,7 @@ client.on('message', msg => {
           		const reaction = collected.first();
 
           		if (reaction.emoji.name === '✅') {
-          			if(list[msg.guild.id]){msg.channel.send(list[msg.guild.id]);}
+          			if(list[msg.guild.id]){msg.channel.send(list[msg.guild.id]);botmsg.edit(`<@${msg.author.id}>, done!`);botmsg.clearReactions();}
                 else{
                   msg.reply("no WWE games initiated after the bot reconnected! Fetching list from another source...").then((newmsg)=>{
                     client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === "bot-roles")
@@ -233,6 +233,23 @@ client.on('message', msg => {
       break;
       case 'myid':
         msg.reply(msg.author.id);
+      break;
+      case 'hw':
+        switch(args[0].toLowerCase()){
+          case 'bafs':
+          case 'ba':
+          case 'bafs-a':
+            switch(args[1].toLowerCase()){
+              case 'pearson':
+                switch(args[2].toLowerCase()){
+                  case 'fa1':
+                    msg.channel.send("Answers for NSS BAFS Pearson FA1 (2nd edition): https://drive.google.com/drive/folders/0B1Wkt8GlusGrX3U1czc4TDFIeXM");
+                  break;
+                }
+              break;
+            }
+          break;
+        }
       break;
     }
   }else if(msg.content.startsWith("lemme ")&&msg.author.id=="531822031059288074"){
@@ -286,6 +303,10 @@ client.on('message', msg => {
           );
         }
       break;
+    }
+  }else if(msg.channel.id==="678630062488289364"||msg.channel.id==="654242712761139200"){
+    if(msg.content.toLowerCase().includes("math")){
+      msg.reply("Hi! Seems like you are asking a question related to maths! I might be able to help, but you would have to follow a format I can recognize, so that I can give detailed steps and the correct solution. Head to https://wwbot.github.io/ww/usage.html to see how you can ask me a maths question ;)");
     }
   }
 });

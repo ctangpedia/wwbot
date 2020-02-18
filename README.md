@@ -14,7 +14,7 @@ Discord Werewolf Bot source code
 ## Run the bot yourself
 1. Create a Discord bot, add your bot to a server and get the bot token. You can follow [this tutorial](https://anidiots.guide/getting-started/getting-started-long-version)
 2. Download node.js, if you haven't :facepalm: (google it if you don't know how to)
-3. Download this repo
+3. Download this repo (https://github.com/ctangpedia/wwbot)
 4. Navigate to the folder you downloaded this repo to and run `npm install`
 5. Rename .env.example to .env and fill in the details. You can put down random nonsense in `RORG` as it's unused when this documentation is written
 6. `node bot.js`

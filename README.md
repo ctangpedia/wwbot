@@ -20,4 +20,4 @@ Discord Werewolf Bot source code
 6. `node bot.js`
 
 ## Control Panel
-The bot comes with a web-based control panel accessible locally. You can disable it in .env with `APIENABLED=FALSE`.
+The bot comes with a web-based control panel accessible locally. You can disable it in .env with `APIENABLED=`.

@@ -241,9 +241,63 @@ client.on('message', msg => {
           case 'bafs-a':
             switch(args[1].toLowerCase()){
               case 'pearson':
+              case 'p':
                 switch(args[2].toLowerCase()){
                   case 'fa1':
-                    msg.channel.send("Answers for NSS BAFS Pearson FA1 (2nd edition): https://drive.google.com/drive/folders/0B1Wkt8GlusGrX3U1czc4TDFIeXM");
+                    if(!process.env.HWENABLED){msg.channel.send("Answers for NSS BAFS Pearson FA1 (2nd edition): https://drive.google.com/drive/folders/0B1Wkt8GlusGrX3U1czc4TDFIeXM");}else{
+                    switch(args[3].toLowerCase()){
+                      case '4.1':
+                      case '4.2':
+                      case '4.2x':
+                      case '4.3':
+                      case '4.3x':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/5.png"]});
+                      break;
+                      case '4.4':
+                      case '4.5':
+                      case '4.5x':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/6.png"]});
+                      break;
+                      case '4.6':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/7.png","./hw/bafs/pearson/fa1/4/8.png"]});
+                      break;
+                      case '4.7':
+                      case '4.7x':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/8.png"]});
+                      break;
+                      case '4.8':
+                      case '4.8x':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/9.png","./hw/bafs/pearson/fa1/4/10.png"]});
+                      break;
+                      case '4.9':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/10.png","./hw/bafs/pearson/fa1/4/11.png"]});
+                      break;
+                      case '4.10':
+                      case '4.10x':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/11.png","./hw/bafs/pearson/fa1/4/12.png"]});
+                      break;
+                      case '4.11':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/12.png"]});
+                      break;
+                      case '4.12':
+                      case '4.12x':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/12.png","./hw/bafs/pearson/fa1/4/13.png"]});
+                      break;
+                      case '4.13':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/13.png"]});
+                      break;
+                      case '4.14':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/14.png"]});
+                      break;
+                      case '4.15':
+                      case '4.15x':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/15.png","./hw/bafs/pearson/fa1/4/16.png"]});
+                      break;
+                      case '4.16':
+                      case '4.16x':
+                        msg.channel.send("",{files: ["./hw/bafs/pearson/fa1/4/16.png","./hw/bafs/pearson/fa1/4/17.png"]});
+                      break;
+                    }}
                   break;
                 }
               break;
@@ -307,6 +361,8 @@ client.on('message', msg => {
   }else if(msg.channel.id==="678630062488289364"||msg.channel.id==="654242712761139200"){
     if(msg.content.toLowerCase().includes("math")){
       msg.reply("Hi! Seems like you are asking a question related to maths! I might be able to help, but you would have to follow a format I can recognize, so that I can give detailed steps and the correct solution. Head to https://wwbot.github.io/ww/usage.html to see how you can ask me a maths question ;)");
+    }else if(msg.content.match(/\d?\d\.\d?\dx?/i)&&(msg.content.toLowerCase().includes("ba")||msg.content.toLowerCase().includes("accounting")||msg.content.toLowerCase().includes("financial")||msg.content.toLowerCase().includes("business"))){
+      msg.reply("Hi! Seems like you are asking a question related to BAFS! If you are looking for the answers of **FA1** Q"+msg.content.match(/(\d?\d\.\d?\d)x?/i)[0]+", use the command `!hw ba p fa1 "+msg.content.match(/(\d?\d\.\d?\d)x?/i)[1]+"`.");
     }
   }
 });

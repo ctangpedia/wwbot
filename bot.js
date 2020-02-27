@@ -2,12 +2,8 @@ const Discord = require("discord.js");
 const RandomOrg = require('random-org');// optional
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'))
 
 require('dotenv').config();
-const port = process.env.PORT;
 const client = new Discord.Client();
 
 var c = [];
@@ -32,6 +28,7 @@ var thisGuild;
 var wfs = []; //wolves
 var seer = [];
 var wdc = []; //wolf discussion channel
+roles["6"] = [wf,wf,vl,vl,wc,se];
 roles["w2v2wsi"] = [wf,wf,vl,vl,wc,se,id];
 roles["w2v2wsh"] = [wf,wf,vl,vl,wc,se,ht];
 roles["wuhan-w2v2wsk"] = [whwf,whwf,whvl,whvl,whwc,whse,whkt];
@@ -42,6 +39,9 @@ roles["w3v3wsh"] = [wf,wf,wf,vl,vl,vl,wc,se,ht];
 roles["wkw2v3wshk"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,kt];
 roles["wkw3v4wshk"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,kt];
 var list = [];
+var tenorCooldown = [];
+var showHWHelp = [];
+showHWHelp["maths"] = [];
 
 const statusCode = ["READY","CONNECTING","RECONNECTING","IDLE","NEARLY","DISCONNECTED"];
 
@@ -82,6 +82,10 @@ function shuffle(array) {
   return array;
 }
 
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const waitBefore = async (tm, fn) => {await sleep(tm*1000);fn()}
+/* src: https://stackoverflow.com/questions/48891218/how-to-sleep-in-node-js-v9-with-es6 */
+
 /**
  * Send out roles to respective channels and grant permissions to wolf discussion channel.
  * @param {Message} msg - The message/command sent to trigger this function.
@@ -115,8 +119,8 @@ const sendroles = (msg,code) => {
   thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
   thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
   msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
-  wdc[msg.guild.id].send("Good evening, wolves! Your mission is to kill the good people. To do so, use the command /kill as follows:\n```/kill <no.>```where `<no.>` is the number of the player you want to kill.\n\n狼人們，晚上好！你們的任務是要殺死好人。想要達成任務，你們可以使用指令/kill，使用方法如下：```/kill <no.>````<no.>`為你們想殺的玩家號碼。");
   thisGuild.channels.find(x => x.name === String(parseInt(seer[msg.guild.id])+1)+'號').send("Good evening, seer! You can check other players and see if they are good (villagers or gods) or bad (wolves). You can check one player per night. To check a player, use the command /check as follows:\n```/check <no.>```where `<no.>` is the number of the player you want to check.");
+  waitBefore(5, () => {wdc[msg.guild.id].send("Good evening, wolves! Your mission is to kill the good people. To do so, use the command /kill as follows:\n```/kill <no.>```where `<no.>` is the number of the player you want to kill.\n\n狼人們，晚上好！你們的任務是要殺死好人。想要達成任務，你們可以使用指令/kill，使用方法如下：```/kill <no.>````<no.>`為你們想殺的玩家號碼。");});
 }
 
 client.on("ready", () => {
@@ -163,6 +167,7 @@ client.on('message', msg => {
           case 'w3v3wsh':
           case 'wkw2v3wshk':
           case 'wkw3v4wshk':
+          case '6':
             sendroles(msg,args[0]);
           break;
           default:
@@ -305,6 +310,10 @@ client.on('message', msg => {
           break;
         }
       break;
+      case 'reset-cooldown':
+        if (!msg.member.roles.some(role => role.name === 'Admin')){msg.reply("this command could only be used by admins. ||GFY!||");return;}
+        if(args[0]){tenorCooldown[args[0]]=0;}
+      break;
     }
   }else if(msg.content.startsWith("lemme ")&&msg.author.id=="531822031059288074"){
     let vc = msg.member.voiceChannel;
@@ -358,9 +367,38 @@ client.on('message', msg => {
         }
       break;
     }
+  }else if(msg.content.toLowerCase().includes("tenor.com/view/")){
+    if(msg.channel.id==="681430411406213130"){
+      return;
+    }else if(tenorCooldown[msg.author.id]>=4){
+      msg.delete();
+    }else if(isNaN(tenorCooldown[msg.author.id])){
+      tenorCooldown[msg.author.id]=1;
+    }else{
+      tenorCooldown[msg.author.id]+=1;
+    }
   }else if(msg.channel.id==="678630062488289364"||msg.channel.id==="654242712761139200"){
-    if(msg.content.toLowerCase().includes("math")){
-      msg.reply("Hi! Seems like you are asking a question related to maths! I might be able to help, but you would have to follow a format I can recognize, so that I can give detailed steps and the correct solution. Head to https://wwbot.github.io/ww/usage.html to see how you can ask me a maths question ;)");
+    if(msg.content.toLowerCase().includes("math")&&msg.content.toLowerCase().includes("help")&&showHWHelp["maths"][msg.author.id]!=false){
+      msg.reply("Hi! Seems like you are asking a question related to maths! I might be able to help, but you would have to follow a format I can recognize, so that I can give detailed steps and the correct solution. Head to https://wwbot.github.io/ww/usage.html to see how you can ask me a maths question ;)\n(If you don't want to see this message again, click ❎. Otherwise, click ✅.").then((botmsg)=>{
+        botmsg.react('✅').then(()=>{botmsg.react('❎')});
+        const filter = (reaction,user) => {
+          return ['✅','❎'].includes(reaction.emoji.name) && user.id === msg.author.id;
+        };
+        botmsg.awaitReactions(filter, { max: 1, time: 60000, errors: ['time'] })
+          .then(collected => {
+            const reaction = collected.first();
+
+            if (reaction.emoji.name === '✅') {
+              botmsg.edit(`<@${msg.author.id}>, Hi! Seems like you are asking a question related to maths! I might be able to help, but you would have to follow a format I can recognize, so that I can give detailed steps and the correct solution. Head to https://wwbot.github.io/ww/usage.html to see how you can ask me a maths question ;)`).then(msg=>msg.clearReactions()).catch(console.error);
+            } else {
+              showHWHelp["maths"][msg.author.id]=false;
+              botmsg.edit(`<@${msg.author.id}>, ok, I won't send you this message again unless I restart.`).then(msg=>msg.clearReactions()).catch(console.error);
+            }
+          })
+          .catch(collected => {
+            console.log(collected);
+          });
+      });
     }else if(msg.content.match(/\d?\d\.\d?\dx?/i)&&(msg.content.toLowerCase().includes("ba")||msg.content.toLowerCase().includes("accounting")||msg.content.toLowerCase().includes("financial")||msg.content.toLowerCase().includes("business"))){
       msg.reply("Hi! Seems like you are asking a question related to BAFS! If you are looking for the answers of **FA1** Q"+msg.content.match(/(\d?\d\.\d?\d)x?/i)[0]+", use the command `!hw ba p fa1 "+msg.content.match(/(\d?\d\.\d?\d)x?/i)[1]+"`.");
     }
@@ -372,6 +410,12 @@ client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
 
 client.login();
+
+/* WBCP and Express API */
+const app = express();
+const port = process.env.PORT;
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 if(!!process.env.APIAUTH){
   app.use((req,res,next)=>{
@@ -405,4 +449,7 @@ app.get('/guilds', (req,res) => {
 });
 app.get('/ping', (req,res)=>{res.json({response: 200, ping: client.ping});});
 app.get('/status', (req,res)=>{res.json({response: 200, status: client.status, parsedStatus: statusCode[client.status]});});
+app.get('/resetcooldown/:id',(req,res)=>{res.status(405);res.set("Allow", "POST");res.json({response: 405, error: "Method not allowed. Please use POST method for this path."})});
+app.post('/resetcooldown/:id',(req,res)=>{res.json({response: 200, userid: req.params.id, cooldown: 0, oldcooldown: tenorCooldown[req.params.id]});tenorCooldown[req.params.id]=0;});
+app.get('/cooldown/:id',(req,res)=>{if(isNaN(tenorCooldown[req.params.id])){tenorCooldown[req.params.id]=0;}res.json({response: 200, userid: req.params.id, cooldown: tenorCooldown[req.params.id]})});
 if(process.env.APIENABLED){app.listen(port, () => console.log(`WBCP listening on port ${port}!`));}

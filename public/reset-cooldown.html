@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  <title>Reset Cooldown for Tenor Spamming</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1>Reset Cooldown for Tenor Spamming</h1>
+  <form action="" method="post" id="f">
+    <label for="user">User ID</label><br><input id="user" name="user"></input><br><!--
+      --><input type="submit">
+  </form>
+  <pre id="output"></pre>
+  <script>
+    const xhr = new XMLHttpRequest(),
+        method = "POST",
+        url = "/resetcooldown/";
+
+    const main = (a) =>{xhr.open(method, url.concat(a), true);
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        document.getElementById("output").innerHTML += xhr.responseText+"\n";
+      }
+    };
+    //xhr.setRequestHeader("X-WBCP-TOKEN", "");
+    xhr.send();}
+    document.getElementById("f").addEventListener("submit",(e)=>{e.preventDefault();main(document.getElementById("user").value);})
+  </script>
+</body>
+</html>

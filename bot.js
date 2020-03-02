@@ -124,7 +124,7 @@ const sendroles = (msg,code) => {
 }
 
 client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  console.log(new Date()+` Logged in as ${client.user.tag}!`);
   client.user.setPresence({
     game: {
         name: 'help: https://wwbot.ctptools.ga/ww/usage.html'

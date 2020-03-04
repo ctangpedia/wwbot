@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const RandomOrg = require('random-org');// optional
+//const RandomOrg = require('random-org');// optional
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -45,7 +45,7 @@ showHWHelp["maths"] = [];
 
 const statusCode = ["READY","CONNECTING","RECONNECTING","IDLE","NEARLY","DISCONNECTED"];
 
-var rorg = new RandomOrg({ apiKey: process.env.RORG });//optional
+//var rorg = new RandomOrg({ apiKey: process.env.RORG });//optional
 
 const helpEmbed = new Discord.RichEmbed()
     .setColor('#ffc800')

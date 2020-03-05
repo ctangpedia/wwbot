@@ -11,12 +11,22 @@ Discord Werewolf Bot source code
 - Memory: 128MB should be more than enough
 - Storage: around 128MB; if you don't need audio, you can remove the related commands and remove the packages `ffmpeg-binaries` and `ffmpeg-static`.
 
-## Run the bot yourself
+## Run the bot yourself (beginners)
 1. Create a Discord bot, add your bot to a server and get the bot token. You can follow [this tutorial](https://anidiots.guide/getting-started/getting-started-long-version)
 2. Download node.js, if you haven't :facepalm: (google it if you don't know how to)
 3. Download this repo (https://github.com/ctangpedia/wwbot)
 4. Navigate to the folder you downloaded this repo to and run `npm install`
-5. Rename .env.example to .env and fill in the details. You can put down random nonsense in `RORG` as it's unused when this documentation is written
+5. `node init.js` and fill in the bot token as instructed
+6. `node simple-bot.js`
+
+----
+
+## Run the bot yourself (advanced)
+1. Create a Discord bot, add your bot to a server and get the bot token. You can follow [this tutorial](https://anidiots.guide/getting-started/getting-started-long-version)
+2. Download node.js, if you haven't :facepalm: (google it if you don't know how to)
+3. Download this repo (https://github.com/ctangpedia/wwbot)
+4. Navigate to the folder you downloaded this repo to and run `npm install`
+5. Rename .env.example to .env and fill in the details. You can leave the `RORG` field empty.
 6. `node bot.js`
 
 ## Control Panel

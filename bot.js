@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 //const RandomOrg = require('random-org');// optional
 const express = require('express');
 const bodyParser = require('body-parser');
+const util = require("./util.js");
 
 require('dotenv').config();
 const client = new Discord.Client();
@@ -34,6 +35,7 @@ roles["w2v2wsh"] = [wf,wf,vl,vl,wc,se,ht];
 roles["wuhan-w2v2wsk"] = [whwf,whwf,whvl,whvl,whwc,whse,whkt];
 roles["w2v2wsk"] = [wf,wf,vl,vl,wc,se,kt];
 roles["meh"] = [wb,wf,vl,vl,vl,se,wc,id];
+roles["mek"] = [wk,wf,vl,vl,vl,se,wc,id];
 roles["meht"] = [wk,wf,wf,vl,vl,se,wc,ht];
 roles["w3v3wsh"] = [wf,wf,wf,vl,vl,vl,wc,se,ht];
 roles["wkw2v3wshk"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,kt];
@@ -50,37 +52,11 @@ const statusCode = ["READY","CONNECTING","RECONNECTING","IDLE","NEARLY","DISCONN
 const helpEmbed = new Discord.RichEmbed()
     .setColor('#ffc800')
     .setTitle('Werewolf Bot Help')
-  	//.setURL('https://ctangpedia.ga/')
     .addField('Current Prefix', prefix)
   	.addField('Available commands for MC', '!role\n!listroles\n!endgame')
     .addField('Available commands for players with Dead role', '!listroles')
   	.setTimestamp()
   	.setFooter('Powered by Werewolf Bot', 'https://discordapp.com/assets/1cbd08c76f8af6dddce02c5138971129.png');
-
-/**
- * Shuffles the given array
- * @author CoolAJ86 via StackOverflow https://stackoverflow.com/a/2450976
- * @param {Array} array - an array to shuffle
- * @returns {Array} the shuffled array
- */
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const waitBefore = async (tm, fn) => {await sleep(tm*1000);fn()}
@@ -92,7 +68,7 @@ const waitBefore = async (tm, fn) => {await sleep(tm*1000);fn()}
  * @param {string} code - role code, see roles[].
  */
 const sendroles = (msg,code) => {
-  roles[code] = shuffle(roles[code]);
+  roles[code] = util.shuffle(roles[code]);
   for(var i=0;i<roles[code].length;i++){
     c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
   }
@@ -148,6 +124,9 @@ client.on('message', msg => {
       case 'mchelp':
         msg.channel.send("<@&629587170050703381>, https://discordapp.com/channels/629570161032036373/653957410607595530/663671180602900500");
       break;
+      case 'commands':
+        msg.channel.send(helpEmbed);
+      break;
       case 'role':
         //if (msg.guild.id=="629570161032036373"){msg.reply("The bot has been temporarily disabled on this server by the author.");return;}
       /*rorg.generateIntegers({ min: 1, max: 99, n: 2 })
@@ -163,6 +142,7 @@ client.on('message', msg => {
           case 'w2v2wsk':
           case 'w2v2wsi':
           case 'meh':
+          case 'mek':
           case 'meht':
           case 'w3v3wsh':
           case 'wkw2v3wshk':
@@ -343,6 +323,15 @@ client.on('message', msg => {
           dispatcher.on("end",end=>{vc.leave()})
         }).catch(e => console.error(e))
     }
+  }else if(msg.content.startsWith("大眾銀行 vs. Simon Lo")){
+    let vc = msg.member.voiceChannel;
+    if(!vc){return msg.reply("get into a vc first");}
+    else{
+      vc.join().then(con=>{
+        let dr = con.playFile('./voices/public-bank.mp3');
+        dr.on("end",end=>{vc.leave()})
+      }).catch(e=>console.error(e))
+    }
   }else if (msg.content.substring(0,1) == "/"){
     var args = msg.content.substring(1).split(' ');
     var cmd = args[0];
@@ -401,6 +390,8 @@ client.on('message', msg => {
       });
     }else if(msg.content.match(/\d?\d\.\d?\dx?/i)&&(msg.content.toLowerCase().includes("ba")||msg.content.toLowerCase().includes("accounting")||msg.content.toLowerCase().includes("financial")||msg.content.toLowerCase().includes("business"))){
       msg.reply("Hi! Seems like you are asking a question related to BAFS! If you are looking for the answers of **FA1** Q"+msg.content.match(/(\d?\d\.\d?\d)x?/i)[0]+", use the command `!hw ba p fa1 "+msg.content.match(/(\d?\d\.\d?\d)x?/i)[1]+"`.");
+    }else if(msg.channel.id==="644812476382445569"&&msg.content.includes("遊戲結束")){
+      client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === "no-mic").send("MC, please use the command `!endgame` if the game has ended. Thank you!");
     }
   }
 });
@@ -442,7 +433,6 @@ app.post('/send', (req,res) => {
   client.channels.find(x => x.name === 'bot').send(req.body.message);res.json({response: 200, message: req.body.message});
 });
 app.get('/guilds', (req,res) => {
-
   res.json(Array.from(client.guilds.keys()));
   //console.log(client.guilds);
   //res.send('<!doctype html>\n<html>\n  <head>\n    <title>Guilds</title>\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n  </head>\n  <body>\n  </body>\n</html>');

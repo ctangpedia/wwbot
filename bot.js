@@ -18,6 +18,7 @@ const se = "seer";
 const ht = "hunter";
 const id = "idiot";
 const kt = "knight";
+const fl = "fool";
 const whvl = "武漢民眾";
 const whwf = "帶菌者";
 const whse = "醫生";
@@ -37,6 +38,7 @@ roles["w2v2wsk"] = [wf,wf,vl,vl,wc,se,kt];
 roles["meh"] = [wb,wf,vl,vl,vl,se,wc,id];
 roles["mek"] = [wk,wf,vl,vl,vl,se,wc,id];
 roles["meht"] = [wk,wf,wf,vl,vl,se,wc,ht];
+roles["fool"] = [wk,wf,wf,se,wc,ht,kt,fl];
 roles["w3v3wsh"] = [wf,wf,wf,vl,vl,vl,wc,se,ht];
 roles["wkw2v3wshk"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,kt];
 roles["wkw3v4wshk"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,kt];
@@ -44,6 +46,7 @@ var list = [];
 var tenorCooldown = [];
 var showHWHelp = [];
 showHWHelp["maths"] = [];
+let maverick = true;
 
 const statusCode = ["READY","CONNECTING","RECONNECTING","IDLE","NEARLY","DISCONNECTED"];
 
@@ -294,6 +297,12 @@ client.on('message', msg => {
         if (!msg.member.roles.some(role => role.name === 'Admin')){msg.reply("this command could only be used by admins. ||GFY!||");return;}
         if(args[0]){tenorCooldown[args[0]]=0;}
       break;
+      case 'maverick':
+        if (!msg.member.roles.some(role => role.name === 'Admin')){msg.reply("this command could only be used by admins. ||GFY!||");msg.delete();return;}
+        maverick=!maverick;
+        msg.channel.send(maverick);
+        msg.delete();
+      break;
     }
   }else if(msg.content.startsWith("lemme ")&&msg.author.id=="531822031059288074"){
     let vc = msg.member.voiceChannel;
@@ -393,6 +402,12 @@ client.on('message', msg => {
     }else if(msg.channel.id==="644812476382445569"&&msg.content.includes("遊戲結束")){
       client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === "no-mic").send("MC, please use the command `!endgame` if the game has ended. Thank you!");
     }
+  }else if(msg.channel.id==="683914657626718208"&&msg.author.id==="399817995314003970"){
+    if(!maverick)return;
+    msg.delete();
+  }
+  if(msg.content.toLowerCase().includes("aov")&&(!msg.content.toLowerCase().includes("aov is shit"))&&(!msg.content.toLowerCase().includes("delete aov"))&&(!msg.content.toLowerCase().includes("don't aov"))&&(!msg.content.toLowerCase().includes("don't play aov"))&&(!msg.content.toLowerCase().includes("don't want to play aov"))&&(!msg.content.toLowerCase().includes("no one wants to play aov"))){
+    msg.delete();
   }
 });
 

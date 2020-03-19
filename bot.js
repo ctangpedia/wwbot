@@ -407,6 +407,7 @@ client.on('message', msg => {
     msg.delete();
   }
   if(msg.content.toLowerCase().includes("aov")&&(!msg.content.toLowerCase().includes("aov is shit"))&&(!msg.content.toLowerCase().includes("delete aov"))&&(!msg.content.toLowerCase().includes("don't aov"))&&(!msg.content.toLowerCase().includes("don't play aov"))&&(!msg.content.toLowerCase().includes("don't want to play aov"))&&(!msg.content.toLowerCase().includes("no one wants to play aov"))){
+    if(msg.channel.id==="681436538810400769")return;
     msg.delete();
   }
 });

@@ -11,7 +11,7 @@ var c = [];
 var prefix = process.env.PREFIX;
 const wf = "wolf";
 const wk = "wolf king";
-const wb = "狼美人";
+const wb = "wolf beauty";
 const vl = "village";
 const wc = "witch";
 const se = "seer";
@@ -19,6 +19,7 @@ const ht = "hunter";
 const id = "idiot";
 const kt = "knight";
 const fl = "fool";
+const gd = "guard";
 const whvl = "武漢民眾";
 const whwf = "帶菌者";
 const whse = "醫生";
@@ -39,9 +40,12 @@ roles["meh"] = [wb,wf,vl,vl,vl,se,wc,id];
 roles["mek"] = [wk,wf,vl,vl,vl,se,wc,id];
 roles["meht"] = [wk,wf,wf,vl,vl,se,wc,ht];
 roles["fool"] = [wk,wf,wf,se,wc,ht,kt,fl];
+roles["wkwbwwshig"] = [wk,wb,wf,wc,se,ht,id,gd];
 roles["w3v3wsh"] = [wf,wf,wf,vl,vl,vl,wc,se,ht];
+roles["uh-huh"] = [wk,wf,wf,vl,vl,vl,se,wc,ht,gd];
 roles["wkw2v3wshk"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,kt];
 roles["wkw3v4wshk"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,kt];
+roles["uh-huh12"] = [wk,wf,wf,wf,vl,vl,vl,vl,se,wc,ht,gd];
 var list = [];
 var tenorCooldown = [];
 var showHWHelp = [];
@@ -80,7 +84,7 @@ const sendroles = (msg,code) => {
   wfs[msg.guild.id]=[];
   for(var j=0;j<roles[code].length;j++){
     c[j].send(roles[code][j]);
-    if(roles[code][j]==wf||roles[code][j]==wk||roles[code][j]==whwf||roles[code][j]==whwk){
+    if(roles[code][j]==wf||roles[code][j]==wk||roles[code][j]==wb||roles[code][j]==whwf||roles[code][j]==whwk){
       wfs[msg.guild.id].push(j);
     }
     if(roles[code][j]==se||roles[code][j]==whse){
@@ -151,6 +155,10 @@ client.on('message', msg => {
           case 'wkw2v3wshk':
           case 'wkw3v4wshk':
           case '6':
+          case 'uh-huh':
+          case 'uh-huh12':
+          case 'wkwbwwshig':
+          case 'fool':
             sendroles(msg,args[0]);
           break;
           default:
@@ -406,8 +414,8 @@ client.on('message', msg => {
     if(!maverick)return;
     msg.delete();
   }
-  if(msg.content.toLowerCase().includes("aov")&&(!msg.content.toLowerCase().includes("aov is shit"))&&(!msg.content.toLowerCase().includes("delete aov"))&&(!msg.content.toLowerCase().includes("don't aov"))&&(!msg.content.toLowerCase().includes("don't play aov"))&&(!msg.content.toLowerCase().includes("don't want to play aov"))&&(!msg.content.toLowerCase().includes("no one wants to play aov"))){
-    if(msg.channel.id==="681436538810400769")return;
+  if(msg.content.toLowerCase().includes("aov")||msg.content.toLowerCase().includes("a0v")||msg.content.toLowerCase().includes("@0v")||msg.content.toLowerCase().includes("@ov")||msg.content.toLowerCase().includes("a o v")||msg.content.toLowerCase().includes("arena of")||msg.content.toLowerCase().includes("arena 0f val0r")||msg.content.toLowerCase().includes("a.o.v")&&(!msg.content.toLowerCase().includes("aov is shit"))&&(!msg.content.toLowerCase().includes("delete aov"))&&(!msg.content.toLowerCase().includes("don't aov"))&&(!msg.content.toLowerCase().includes("don't play aov"))&&(!msg.content.toLowerCase().includes("don't want to play aov"))&&(!msg.content.toLowerCase().includes("no one wants to play aov"))&&(!msg.content.toLowerCase().includes("fuck aov"))&&(!msg.content.toLowerCase().includes("fk aov"))){
+    if(msg.channel.id==="681436538810400769"||msg.member.roles.some(role => role.name === 'Bot Developer')||msg.author.id=="531822031059288074")return;
     msg.delete();
   }
 });

@@ -456,6 +456,12 @@ app.post('/presence', (req,res) => {res.json({presence: req.body.presence});clie
 app.post('/send', (req,res) => {
   client.channels.find(x => x.name === 'bot').send(req.body.message);res.json({response: 200, message: req.body.message});
 });
+app.post('/send-nomic', (req,res) => {
+  client.channels.find(x => x.name === 'no-mic').send(req.body.message);res.json({response: 200, message: req.body.message});
+});
+app.post('/send-botan', (req,res) => {
+  client.channels.find(x => x.name === 'bot-announcements').send(req.body.message);res.json({response: 200, message: req.body.message});
+});
 app.get('/guilds', (req,res) => {
   res.json(Array.from(client.guilds.keys()));
   //console.log(client.guilds);

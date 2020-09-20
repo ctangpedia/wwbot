@@ -90,9 +90,7 @@ for (let i = 0;i<memeCmd.length;i++){
 }
 let begDonors = ["WS Tang", "C Tong", "YC Leung", "Fat Tam", "The guy who sits besides you and farts every 5 minutes", "Tonald Drump", "Foogle Inc.", "That girl whose bed you woke up in last night and you're too afraid to ask her name because you might come off as rude","Patty Kerry","An alien","A cookie","A cup of bear","69 moles of dihydrogen monoxide","Gordon't Ramsaid","Wumpus","Clyde","Markie Succkerburg"];
 let begActions = ["donated", "gave", "sent"];
-
 const statusCode = ["READY","CONNECTING","RECONNECTING","IDLE","NEARLY","DISCONNECTED"];
-
 //var rorg = new RandomOrg({ apiKey: process.env.RORG });//optional
 
 const helpEmbed = new Discord.RichEmbed()
@@ -115,13 +113,13 @@ const waitBefore = async (tm, fn) => {await sleep(tm*1000);fn()}
  */
 const sendroles = (msg,code) => {
   roles[code] = util.shuffle(roles[code]);
-  for(var i=0;i<roles[code].length;i++){
+  for(let i=0;i<roles[code].length;i++){
     c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
   }
   wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
   list[msg.guild.id] = "";
   wfs[msg.guild.id]=[];
-  for(var j=0;j<roles[code].length;j++){
+  for(let j=0;j<roles[code].length;j++){
     c[j].send(roles[code][j]);
     if(roles[code][j]==wf||roles[code][j]==wk||roles[code][j]==wb||roles[code][j]==ws||roles[code][j]==wg||roles[code][j]==whwf||roles[code][j]==whwk){
       wfs[msg.guild.id].push(j);
@@ -131,7 +129,7 @@ const sendroles = (msg,code) => {
     }
     list[msg.guild.id] += String(j+1)+". "+roles[code][j]+"\n";
   }
-  for(var k=0;k<wfs[msg.guild.id].length;k++){
+  for(let k=0;k<wfs[msg.guild.id].length;k++){
     wdc[msg.guild.id].overwritePermissions(
       msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
       { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
@@ -423,13 +421,11 @@ client.on('message', msg => {
         msg.channel.send("done").then(msg=>msg.delete(3000));
       break;
       case 'help':
+      case 'commands':
         msg.channel.send(helpEmbed);
       break;
       case 'mchelp':
         msg.channel.send("<@&629587170050703381>, https://discordapp.com/channels/629570161032036373/653957410607595530/663671180602900500");
-      break;
-      case 'commands':
-        msg.channel.send(helpEmbed);
       break;
       case 'role':
         //if (msg.guild.id=="629570161032036373"){msg.reply("The bot has been temporarily disabled on this server by the author.");return;}
@@ -851,7 +847,7 @@ app.get('/channel/:id',(req,res)=>{
   switch(channel.type){
     case 'text':
       //console.log(Array.from(channel.messages.keys()));
-      response+=`<h1>#${channel.name}</h1></body></html>`;
+      response+=`<h1>#${channel.name}</h1>`;
       response+=`<div><button onclick="toggleTyping();">Toggle typing</button><span>Typing: <span>${channel.typing}</span></div>`
       response+=`<div><label for="message">Message Text</label><br><textarea id="message" name="message" rows="25" cols="100"></textarea><br><!--
             --><button onclick="sendMsg();">Send</button></div>`;

@@ -784,12 +784,6 @@ app.post('/presence', (req,res) => {res.json({presence: req.body.presence});clie
 app.post('/send', (req,res) => {
   client.channels.find(x => x.name === 'bot').send(req.body.message);res.json({response: 200, message: req.body.message});
 });
-app.post('/send-nomic', (req,res) => {
-  client.channels.find(x => x.name === 'no-mic').send(req.body.message);res.json({response: 200, message: req.body.message});
-});
-app.post('/send-botan', (req,res) => {
-  client.channels.find(x => x.name === 'announcements').send(req.body.message);res.json({response: 200, message: req.body.message});
-});
 app.get('/guilds', (req,res) => {
   res.json(Array.from(client.guilds.keys()));
   //console.log(client.guilds);
@@ -869,10 +863,9 @@ xhr.send(\`id=\${channelId}&msg=\${document.getElementById("message").value}\`);
 function toggleTyping(){
   xhr.open("POST", '/toggle-typing', true);
 
-  //Send the proper header information along with the request
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-  xhr.onreadystatechange = function() { // Call a function when the state changes.
+  xhr.onreadystatechange = function() {
       if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
           console.log(this.response);
       }

@@ -18,3 +18,38 @@ module.exports.shuffle = (array) => {
   }
   return array;
 }
+module.exports.reverseString = (str) => {
+    return str.split("").reverse().join("");
+}
+module.exports.randomIntIncl = (min,max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}//moz, too lazy to write myself
+module.exports.getCooldown = (user,cmd) => {
+  switch(cmd){
+    case "beg":
+      if(user=="531822031059288074"||user=="395405722566918144"){
+        return 10000;
+      }else{
+        return 12500;
+      }
+    break;
+    case "work":
+      if(user=="531822031059288074"||user=="395405722566918144"){
+        return 15000;
+      }else{
+        return 200000;
+      }
+    break;
+    case "pm":
+      if(user=="531822031059288074"||user=="395405722566918144"){
+        return 10000;
+      }else{
+        return 60000;
+      }
+    break;
+    default:
+    return 15000;
+  }
+}

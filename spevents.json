@@ -1,0 +1,22 @@
+[
+	{
+		"question": "**COMMON EVENT**\n\nFirst to type `I like watching popcorn` gets 1000 coins. (not dark memer coins but whatever) (expires in 15 seconds)",
+		"answers": ["I like watching popcorn"],
+    "reward": 1000
+	},
+  {
+		"question": "**COMMON EVENT**\n\nFirst to type `nice` gets 420 coins. (not dark memer coins but whatever) (expires in 15 seconds)",
+		"answers": ["nice"],
+    "reward": 420
+	},
+  {
+		"question": "**COMMON EVENT**\n\nFirst to type `nice` gets 69 coins. (not dark memer coins but whatever) (expires in 15 seconds)",
+		"answers": ["nice"],
+    "reward": 69
+	},
+  {
+		"question": "**RARE EVENT**\n\nFirst to type `a bunny and a funny goat sleeping on a hill on a sunny day` gets a mysterious reward (expires in 15 seconds)",
+		"answers": ["a bunny and a funny goat sleeping on a hill on a sunny day"],
+    "reward": 6942
+	}
+]

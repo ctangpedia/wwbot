@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <title>AOV Bypass</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h1>Allowed roles to bypass AOV filter</h1>
+  <button id="refresh">Refresh</button>
+  <ul id="output"></ul>
+  <h2>Add new roles</h2>
+  <form action="/aovbypass" method="post">
+    <label for="message">Role Name</label><br><input id="role"></input><br><!--
+      --><input type="submit">
+  </form>
+  <script>
+    const xhr = new XMLHttpRequest(),
+        method = "GET",
+        url = "/aovbypass";
+
+    const main = () =>{xhr.open(method, url, true);
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        JSON.parse(xhr.responseText).forEach(id => document.getElementById("output").innerHTML += `<li>${id}</li>`)
+      }
+    };
+    //xhr.setRequestHeader("X-WBCP-TOKEN", "");
+    xhr.send();}
+    document.getElementById("refresh").addEventListener("click",()=>{
+      document.getElementById("output").innerHTML = "";
+      main();
+    })
+    main();
+  </script>
+</body>
+</html>

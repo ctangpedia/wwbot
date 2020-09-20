@@ -3,3 +3,4 @@ hw
 .DS_Store
 .env
 *.log
+memebot.json

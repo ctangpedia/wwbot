@@ -1,0 +1,22 @@
+[
+	{
+		"question": "You work as an YouTuber, and your boss has asked you to type the following word backwards in 20 seconds.\n`$1`",
+		"type": "reverse",
+    "time": 20000,
+    "wordlist": ["clickbait","dislike","subscribe","like","comment","rewind"],
+    "response": "Great job <@$1>! Here's your `$2` coins.",
+    "rewardtype": "minmax",
+    "rewardmin": 200,
+    "rewardmax": 205
+	},
+  {
+    "question": "You work as an YouTuber, and your boss has asked you to unscramble the following word in 20 seconds.\n`$1`",
+    "type": "unscramble",
+    "time": 20000,
+    "wordlist": ["colours","trending","subscribe","appear","repeated","settings"],
+    "response": "Great job <@$1>! Here's your `$2` coins.",
+    "rewardtype": "minmax",
+    "rewardmin": 300,
+    "rewardmax": 308
+  }
+]

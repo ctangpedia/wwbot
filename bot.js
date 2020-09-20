@@ -3,6 +3,20 @@ const Discord = require("discord.js");
 const express = require('express');
 const bodyParser = require('body-parser');
 const util = require("./util.js");
+String.prototype.shuffle = function() {
+    let a = this.split(""),
+        n = a.length;
+
+    for(let i = n - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+    return a.join("");
+}
+const axios = require('axios');
+const fs = require('fs');
 
 require('dotenv').config();
 const client = new Discord.Client();
@@ -12,7 +26,12 @@ var prefix = process.env.PREFIX;
 const wf = "wolf";
 const wk = "wolf king";
 const wb = "wolf beauty";
+const ws = "wolf seer";
+const whid = "hidden wolf";
+const wg = "守護狼";
+const sjg = "石像鬼";
 const vl = "village";
+const vg = "守護者";
 const wc = "witch";
 const se = "seer";
 const ht = "hunter";
@@ -20,6 +39,8 @@ const id = "idiot";
 const kt = "knight";
 const fl = "fool";
 const gd = "guard";
+const tg = "tomb guard";
+const bse = "禁言長老";
 const whvl = "武漢民眾";
 const whwf = "帶菌者";
 const whse = "醫生";
@@ -36,21 +57,39 @@ roles["w2v2wsi"] = [wf,wf,vl,vl,wc,se,id];
 roles["w2v2wsh"] = [wf,wf,vl,vl,wc,se,ht];
 roles["wuhan-w2v2wsk"] = [whwf,whwf,whvl,whvl,whwc,whse,whkt];
 roles["w2v2wsk"] = [wf,wf,vl,vl,wc,se,kt];
+roles["wkw2wshk"] = [wk,wf,wf,wc,se,ht,kt];
 roles["meh"] = [wb,wf,vl,vl,vl,se,wc,id];
 roles["mek"] = [wk,wf,vl,vl,vl,se,wc,id];
 roles["meht"] = [wk,wf,wf,vl,vl,se,wc,ht];
 roles["fool"] = [wk,wf,wf,se,wc,ht,kt,fl];
+roles["我要曲線自爆"] = [wk,wf,wc,se,ht,id,gd,fl];
+roles["ur-ded"] = [wk,wf,wf,se,wc,ht,id,gd];
 roles["wkwbwwshig"] = [wk,wb,wf,wc,se,ht,id,gd];
 roles["w3v3wsh"] = [wf,wf,wf,vl,vl,vl,wc,se,ht];
 roles["uh-huh"] = [wk,wf,wf,vl,vl,vl,se,wc,ht,gd];
 roles["wkw2v3wshk"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,kt];
+roles["wkw2v3wshg"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,gd];
 roles["wkw3v4wshk"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,kt];
+roles["wkw3v4wshg"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,gd];
 roles["uh-huh12"] = [wk,wf,wf,wf,vl,vl,vl,vl,se,wc,ht,gd];
+roles["wswkwwshike"] = [ws,wk,wf,wc,se,ht,id,kt,bse];
+roles["rock"] = [sjg,wf,wf,wf,vl,vl,vl,vl,se,wc,ht,tg];
 var list = [];
 var tenorCooldown = [];
 var showHWHelp = [];
 showHWHelp["maths"] = [];
 let maverick = true;
+let aovbypass=[];
+aovbypass.push("Bot Developer");
+
+let memeusers = {};
+let meCooldowns = {};
+const memeCmd = ["beg","work","pm"];
+for (let i = 0;i<memeCmd.length;i++){
+  meCooldowns[memeCmd[i]] = [];
+}
+let begDonors = ["WS Tang", "C Tong", "YC Leung", "Fat Tam", "The guy who sits besides you and farts every 5 minutes", "Tonald Drump", "Foogle Inc.", "That girl whose bed you woke up in last night and you're too afraid to ask her name because you might come off as rude","Patty Kerry","An alien","A cookie","A cup of bear","69 moles of dihydrogen monoxide","Gordon't Ramsaid","Wumpus","Clyde","Markie Succkerburg"];
+let begActions = ["donated", "gave", "sent"];
 
 const statusCode = ["READY","CONNECTING","RECONNECTING","IDLE","NEARLY","DISCONNECTED"];
 
@@ -84,7 +123,7 @@ const sendroles = (msg,code) => {
   wfs[msg.guild.id]=[];
   for(var j=0;j<roles[code].length;j++){
     c[j].send(roles[code][j]);
-    if(roles[code][j]==wf||roles[code][j]==wk||roles[code][j]==wb||roles[code][j]==whwf||roles[code][j]==whwk){
+    if(roles[code][j]==wf||roles[code][j]==wk||roles[code][j]==wb||roles[code][j]==ws||roles[code][j]==wg||roles[code][j]==whwf||roles[code][j]==whwk){
       wfs[msg.guild.id].push(j);
     }
     if(roles[code][j]==se||roles[code][j]==whse){
@@ -113,18 +152,276 @@ client.on("ready", () => {
         name: 'help: https://wwbot.ctptools.ga/ww/usage.html'
     }
   });
+  memeusers = JSON.parse(fs.readFileSync('./memebot.json'));
+  console.log(memeusers["531822031059288074"].wallet);
+  console.log(memeusers["531822031059288074"].bank);
   //client.channels.find(x => x.name === 'manage').send("Reconnected!");
   //client.channels.find(x => x.name === 'bot').send("Reconnected!"); //ugh
 });
 
 client.on('message', msg => {
   if (msg.author.bot) return;
+  if (msg.content.substring(0,4) == "hey " && (msg.channel.id === "732479795144949791" || msg.channel.id === "654242712761139200")) {
+    var args = msg.content.substring(4).split(' ');
+    var cmd = args[0];
+    args = args.splice(1);
+    switch (cmd) {
+      case 'help':
+        msg.channel.send("beg work pm bal rich dep");
+      break;
+      case 'beg':
+        if(meCooldowns["beg"][msg.author.id] === undefined || meCooldowns["beg"][msg.author.id][0]){
+          meCooldowns["beg"][msg.author.id] = [];
+          meCooldowns["beg"][msg.author.id][0] = false;
+          meCooldowns["beg"][msg.author.id][1] = Date.now()+util.getCooldown(msg.author.id,"beg");
+          let ifGivesMoney = util.randomIntIncl(0,5);
+          let begMoney;
+          if(ifGivesMoney!=0){
+            begMoney = util.randomIntIncl(2,815);
+            msg.channel.send(`**${begDonors[Math.floor(Math.random() * begDonors.length)]}** ${begActions[Math.floor(Math.random() * begActions.length)]} ${begMoney} coins to <@${msg.author.id}>.`);
+          }else{
+            begMoney = 0;
+            msg.channel.send(`**${begDonors[Math.floor(Math.random() * begDonors.length)]}** is not gonna give you any money haha <@${msg.author.id}>`);
+          }
+          if(memeusers[msg.author.id].wallet===undefined){memeusers[msg.author.id].wallet=begMoney;}else{memeusers[msg.author.id].wallet+=begMoney;}
+          setTimeout(()=>{meCooldowns["beg"][msg.author.id][0] = true;},util.getCooldown(msg.author.id,"beg"));
+        }else{
+          msg.channel.send(`hey cool down you have to wait ${((meCooldowns["beg"][msg.author.id][1]-Date.now())/1000).toFixed(1)} seconds before you can beg again`);
+        }
+        let ifSpecialEvent = util.randomIntIncl(0,2);
+        if(ifSpecialEvent == 0){
+          const quiz = require('./spevents.json');
+          const item = quiz[Math.floor(Math.random() * quiz.length)];
+          const filter = response => {
+	           return item.answers.some(answer => answer === response.content);//.toLowerCase()
+          };
+
+          msg.channel.send(item.question).then(() => {
+	           msg.channel.awaitMessages(filter, { maxMatches: 1, time: 15000, errors: ['time'] })
+		           .then(collected => {
+			              msg.channel.send(`${collected.first().author} got ${item.reward} coins`);
+                    if(memeusers[collected.first().author.id].wallet===undefined){memeusers[collected.first().author.id].wallet=item.reward;}else{memeusers[collected.first().author.id].wallet+=item.reward;}
+		           })
+		           .catch(collected => {
+			              msg.channel.send('event expired what are you guys even thinking smh it\'s free coins');
+		           });
+          });
+        }
+      break;
+      case 'postmeme':
+      case 'pm':
+        //msg.channel.send(`no. nope. nah.`);
+        if(meCooldowns["pm"][msg.author.id] === undefined || meCooldowns["pm"][msg.author.id][0]){
+          meCooldowns["pm"][msg.author.id] = [];
+          meCooldowns["pm"][msg.author.id][0] = false;
+          meCooldowns["pm"][msg.author.id][1] = Date.now()+util.getCooldown(msg.author.id,"pm");
+          if(memeusers[msg.author.id] === undefined){
+            memeusers[msg.author.id]={id:msg.author.id,wallet:0,bank:0,bankcap:100};
+            msg.channel.send("you know what you should probably start begging to get some coins first");
+          }else{
+            if(memeusers[msg.author.id].inv.laptop===undefined || memeusers[msg.author.id].inv.laptop==0){
+              return msg.channel.send("how are you going to post a meme without a laptop...");
+            }else{
+              let karma = util.randomIntIncl(25,6000);
+              let memeve = util.randomIntIncl(0,2);
+              if(memeve==0){
+                if(!!util.randomIntIncl(0,1)){
+                  msg.channel.send(`Everyone **hates** your meme, and it ended up with **-${karma} karma**. You get 0 coins lol sucks to be you`);
+                }else{
+                  msg.channel.send(`Everyone **hates** your meme, and it ended up with **-${karma} karma**. You get 0 coins AND now your :computer: **Laptop** is broken lmao`);
+                  memeusers[msg.author.id].inv.laptop-=1;
+                }
+              }else{
+                let memeReward = util.randomIntIncl(30,1000);
+                if(karma<2000){
+                  msg.channel.send(`Your meme got **${karma} upvotes**. You get ${memeReward} coins from the ads`);
+                }else{
+                  msg.channel.send(`Your meme is __**TRENDING**__ with **${karma} karma**. You get ${memeReward} coins, niceeee meme bro`)
+                }
+                if(memeusers[msg.author.id].wallet===undefined){memeusers[msg.author.id].wallet=memeReward;}else{memeusers[msg.author.id].wallet+=memeReward;}
+              }
+            }
+          }
+          setTimeout(()=>{meCooldowns["pm"][msg.author.id][0] = true;},util.getCooldown(msg.author.id,"pm"));
+        }else{
+          msg.channel.send(`hey cool down you have to wait ${((meCooldowns["pm"][msg.author.id][1]-Date.now())/1000).toFixed(1)} seconds before you can post a meme again`);
+        }
+
+        /*
+        Everyone **hates** your meme, and it ended up with **-1,471 karma**. You get 0 coins AND now your :laptop: **Laptop** is broken lmao
+        Everyone **hates** your meme, and it ended up with **-608 karma**. You get 0 coins lol sucks to be you
+        Your meme got **253 upvotes**. You get 202 coins from the ads
+        Your meme is __**TRENDING**__ with **2,324 karma**. You get 192 coins, niceeee meme bro
+        Your meme is __**TRENDING**__ with **4,145 karma**. You get 714 coins, also a fan of your memes sent you 1 :candy: **Candy**
+        , also a fan of your memes sent you 1 :sand: Box of Sand
+        */
+      break;
+      case 'work':
+        if(meCooldowns["work"][msg.author.id] === undefined || meCooldowns["work"][msg.author.id][0]){
+          meCooldowns["work"][msg.author.id] = [];
+          meCooldowns["work"][msg.author.id][0] = false;
+          meCooldowns["work"][msg.author.id][1] = Date.now()+util.getCooldown(msg.author.id,"work");
+          let workStatus = util.randomIntIncl(1,6);
+          let rewardMoney = 0;
+          switch(workStatus){
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+              const quiz = require('./works.json');
+              const item = quiz[Math.floor(Math.random() * quiz.length)];
+              let word, filter;
+              switch(item.type){
+                case "reverse":
+                  word = item.wordlist[Math.floor(Math.random() * item.wordlist.length)];
+                  filter = response => {
+                    return ((response.content.toLowerCase() === util.reverseString(word))&&response.author.id === msg.author.id);
+                  };
+                  msg.channel.send(item.question.replace(/\$1/,word)).then(() => {
+                    msg.channel.awaitMessages(filter, { maxMatches: 1, time: item.time, errors: ['time'] })
+                     .then(collected => {
+                        rewardMoney += util.randomIntIncl(item.rewardmin,item.rewardmax);
+                        msg.channel.send(item.response.replace(/\$1/,msg.author.id).replace(/\$2/,rewardMoney));
+                        if(memeusers[msg.author.id].wallet===undefined){memeusers[msg.author.id].wallet=rewardMoney;}else{memeusers[msg.author.id].wallet+=rewardMoney;}
+                     })
+                     .catch(collected => {
+                        msg.channel.send('**BOSS** is angry with your horrible work and refuses to give you any coins smh');
+                     });
+                  });
+                break;
+                case "unscramble":
+                  word = item.wordlist[Math.floor(Math.random() * item.wordlist.length)];
+                  filter = response => {
+                    return ((response.content.toLowerCase() === word)&&response.author.id === msg.author.id);
+                  };
+                  msg.channel.send(item.question.replace(/\$1/,word.shuffle())).then(() => {
+                    msg.channel.awaitMessages(filter, { maxMatches: 1, time: item.time, errors: ['time'] })
+                     .then(collected => {
+                        rewardMoney += util.randomIntIncl(item.rewardmin,item.rewardmax);
+                        msg.channel.send(item.response.replace(/\$1/,msg.author.id).replace(/\$2/,rewardMoney));
+                        if(memeusers[msg.author.id].wallet===undefined){memeusers[msg.author.id].wallet=rewardMoney;}else{memeusers[msg.author.id].wallet+=rewardMoney;}
+                     })
+                     .catch(collected => {
+                        rewardMoney += 50;
+                        msg.channel.send('**BOSS** is angry with your horrible work and decides to give you only 50 coins');
+                        if(memeusers[msg.author.id].wallet===undefined){memeusers[msg.author.id].wallet=rewardMoney;}else{memeusers[msg.author.id].wallet+=rewardMoney;}
+                     });
+                  });
+                break;
+              }
+              /*const filter = response => {
+                return item.answers.some(answer => answer === response.content);//.toLowerCase()
+              };
+
+              msg.channel.send(item.question).then(() => {
+                msg.channel.awaitMessages(filter, { maxMatches: 1, time: 15000, errors: ['time'] })
+                 .then(collected => {
+                      msg.channel.send(`${collected.first().author} got ${item.reward} coins`);
+                      if(wallets[collected.first().author.id]===undefined){wallets[collected.first().author.id]=item.reward;}else{wallets[collected.first().author.id]+=item.reward;}
+                 })
+                 .catch(collected => {
+                      msg.channel.send('event expired what are you guys even thinking smh it\'s free coins');
+                 });
+              });*/
+            break;
+            case 6:
+              msg.channel.send("no work for you lol try again later");
+            break;
+          }
+          setTimeout(()=>{meCooldowns["work"][msg.author.id][0] = true;},util.getCooldown(msg.author.id,"work"));
+        }else{
+          msg.channel.send(`hey cool down you have to wait ${((meCooldowns["work"][msg.author.id][1]-Date.now())/1000).toFixed(1)} seconds before you can work again`);
+        }
+      break;
+      case 'bal':
+        if(memeusers[msg.author.id].wallet===undefined || memeusers[msg.author.id].wallet == 0){
+          msg.channel.send(`you are poor I think you should start begging others for money with \`hey beg\``);
+        }else{
+          msg.channel.send(`<@${msg.author.id}>\nWallet: ${memeusers[msg.author.id].wallet}\nBank: ${memeusers[msg.author.id].bank}/${memeusers[msg.author.id].bankcap}`);
+        }
+      break;
+      case 'rich':
+        //msg.channel.send("I am rich haha");
+        /* nah won't work ofc let richest = [Object.keys(memeusers)[0]];
+        Object.keys(memeusers).forEach((key)=>{
+          if(memeusers[key].wallet>=richest[0]){
+            richest = [key, ...richest];
+          }else{
+            richest.push(key);
+          }
+        });
+        console.log(richest);*/
+        let richest = [];
+        Object.keys(memeusers).forEach((key)=>{
+          richest.push(memeusers[key]);
+        })
+        richest = richest.sort((a,b)=>{
+          return b.wallet-a.wallet;
+        });
+        console.log(richest);
+        let richmsg = "Richest users in this server\n";
+        for(let i=0;i<richest.length;i++){
+          richmsg+=`${i+1}. ${client.users.get(richest[i].id).username}#${client.users.get(richest[i].id).discriminator} - ${richest[i].wallet}\n`;
+        }
+        msg.channel.send(richmsg);
+      break;
+      case 'dep':
+        //msg.channel.send(`why do you think I can deposit your money into the bank when you don't have a bank account?`);
+        if(memeusers[msg.author.id] === undefined){
+          memeusers[msg.author.id]={id:msg.author.id,wallet:0,bank:0,bankcap:100};
+          msg.channel.send("you know what you should probably start begging to get some coins first");
+        }else{
+          if(memeusers[msg.author.id].bank===undefined||memeusers[msg.author.id].bankcap===undefined){return msg.channel.send("Your WWE meme bot profile is corrupted. Contact bot owner to fix it.")}
+          if(isNaN(args[0])){
+            if(args[0]=="all"){
+              let bankdep = memeusers[msg.author.id].bankcap-memeusers[msg.author.id].bank;
+              memeusers[msg.author.id].wallet-=bankdep;
+              memeusers[msg.author.id].bank+=bankdep;
+              msg.channel.send(`succesfully deposited ${bankdep} coins\n**PRO TIP**: If your bank account is full, there's nothing you could do other than waiting for the bot owner to randomly increase your bank account capacity lol`);
+            }else{
+              msg.channel.send(`smh that's not the correct syntax`);
+            }
+          }else{
+            if(memeusers[msg.author.id].wallet<args[0]){return msg.channel.send(`don't trick me you don't have that much money :angry:`);}
+            let availableBank = memeusers[msg.author.id].bankcap-memeusers[msg.author.id].bank;
+            let bankdep = 0;
+            if(args[0]>availableBank){bankdep=availableBank;}else{bankdep=args[0];}
+            bankdep=Math.floor(bankdep);
+            memeusers[msg.author.id].wallet-=bankdep;
+            memeusers[msg.author.id].bank+=bankdep;
+            msg.channel.send(`successfully deposited ${bankdep} coins`);
+          }
+        }
+      break;
+      case 'steal':
+      case 'rob':
+        msg.channel.send(`this bot is peacful no stealing or robbing ||before the bot owner decides to add this function||`);
+        if(memeusers[msg.author.id].wallet===undefined || memeusers[msg.author.id].wallet < 250){return msg.channel.send('you have to possess at least 250 coins to steal from others');}
+        const targetMember = msg.mentions.members.first().user;
+
+        console.log(targetMember);
+      break;
+      case 'logusers':
+        if(msg.author.id!="531822031059288074")return;
+        console.log(memeusers);
+        console.log(JSON.stringify(memeusers));
+      break;
+    }
+  }
   if (msg.content.substring(0,1) == prefix) {
     var args = msg.content.substring(1).split(' ');
     var cmd = args[0];
     args = args.splice(1);
 
     switch (cmd) {
+      /*case 'temp':
+        msg.channel.setRateLimitPerUser(3);
+      break;*/
+      case 'msgs':
+        console.log(msg.channel.fetchMessages({ limit: 20 }));msg.delete();
+        msg.channel.send("done").then(msg=>msg.delete(3000));
+      break;
       case 'help':
         msg.channel.send(helpEmbed);
       break;
@@ -159,6 +456,13 @@ client.on('message', msg => {
           case 'uh-huh12':
           case 'wkwbwwshig':
           case 'fool':
+          case 'ur-ded':
+          case '我要曲線自爆':
+          case 'wkw3v4wshg':
+          case 'wswkwwshike':
+          case 'rock':
+          case 'wkw2wshk':
+          case 'wkw2v3wshg':
             sendroles(msg,args[0]);
           break;
           default:
@@ -218,19 +522,20 @@ client.on('message', msg => {
       break;
       case 'purge':
         //if (msg.guild.id=="629570161032036373"){msg.reply("this command has been temporarily disabled on this server by the author.");return;}
-        if (!msg.member.roles.some(role => role.name === 'MC')){msg.reply("this command could only be used by MCs. ||GFY!||");return;}
-        if(!isNaN(parseInt(args[0]))&&(parseInt(args[0]))<101){
-          msg.channel.bulkDelete(args[0]).then(() => {
-            msg.channel.send("Deleted "+args[0]+" messages. (This message will self-delete in 3 seconds.)").then(msg => msg.delete(3000));
-          });
-        }else{
-          msg.channel.send("Usage Instructions:\n!purge [number of messages you intend to delete in bulk]");
-        }
+        if (msg.author.id=="395405722566918144"||msg.author.id=="531822031059288074"||msg.member.roles.some(role => role.name === 'MC')){
+          if(!isNaN(parseInt(args[0]))&&(parseInt(args[0]))<101){
+            msg.channel.bulkDelete(args[0]).then(() => {
+              msg.channel.send("Deleted "+args[0]+" messages. (This message will self-delete in 3 seconds.)").then(msg => msg.delete(3000));
+            });
+          }else{
+            msg.channel.send("Usage Instructions:\n!purge [number of messages you intend to delete in bulk]");
+          }
+        }else{msg.reply("this command could only be used by MCs. ||GFY!||");}
       break;
       case 'myid':
         msg.reply(msg.author.id);
       break;
-      case 'hw':
+      /*case 'hw':
         switch(args[0].toLowerCase()){
           case 'bafs':
           case 'ba':
@@ -300,7 +605,7 @@ client.on('message', msg => {
             }
           break;
         }
-      break;
+      break;*/
       case 'reset-cooldown':
         if (!msg.member.roles.some(role => role.name === 'Admin')){msg.reply("this command could only be used by admins. ||GFY!||");return;}
         if(args[0]){tenorCooldown[args[0]]=0;}
@@ -310,6 +615,90 @@ client.on('message', msg => {
         maverick=!maverick;
         msg.channel.send(maverick);
         msg.delete();
+      break;
+      case 'clanwar':
+        axios.get(`https://api.clashroyale.com/v1/clans/%23${process.env.CRCLANTAG}/currentwar`,{headers:{"Accept":"application/json","Authorization":`Bearer ${process.env.CRTOKEN}`}})
+          .then(function (response) {
+            const data = response.data;
+            let botmsg = "";
+            switch(data.state){
+              case 'notInWar':
+              botmsg+="No active clan wars.";
+              msg.channel.send(botmsg);
+              break;
+              case 'collectionDay':
+              case 'matchmaking':
+              let tss = data.collectionEndTime.split("T")[1].split(".")[0];
+              let players ="";
+              for(let i=0;i<data.clan.participants;i++){
+                players+=`${data.participants[i].name}\n`;
+              }
+              const infoEmbed = new Discord.RichEmbed()
+              	.setColor('#0099ff')
+              	.setTitle('CR Clan War Status')
+              	.setAuthor(data.clan.name,`https://cdn.statsroyale.com/images/badges/${data.clan.badgeId}.png`)
+              	.setDescription(`It's collection day!`)
+              	.addField('Collection day ends', `${tss.slice(0,2)}:${tss.slice(2,4)}:${tss.slice(4,6)} (UTC)`, true)
+              	.addField('Number of participants', data.clan.participants,true)
+              	//.addField('Inline field title', 'Some value here', true)
+                .addField('Participants', players)
+              	//.addField('Inline field title', 'Some value here', true)
+              	//.addField('Inline field title', 'Some value here', true)
+              	//.addField('Regular field title', 'Some value here')
+              	//.addBlankField()
+              	.setTimestamp();
+              msg.channel.send(infoEmbed);
+              break;
+              case 'warDay':
+              //console.log(data);
+              let tsy = data.warEndTime.split("T")[1].split(".")[0];
+              let playerswd="";
+              let clanranks="";
+              for(let i=0;i<data.clan.participants;i++){
+                playerswd+=`${data.participants[i].name}\n`;
+              }
+              for(let i=0;i<data.clans.length;i++){
+                clanranks+=`${i+1}. ${data.clans[i].name}\n`;
+              }
+              const infoEmbedwd = new Discord.RichEmbed()
+              	.setColor('#0099ff')
+              	.setTitle('CR Clan War Status')
+              	.setAuthor(data.clan.name,`https://cdn.statsroyale.com/images/badges/${data.clan.badgeId}.png`)
+              	.setDescription(`It's war day!`)
+              	.addField('War day ends', `${tsy.slice(0,2)}:${tsy.slice(2,4)}:${tsy.slice(4,6)} (UTC)`, true)
+              	.addField('Number of participants', data.clan.participants,true)
+                .addField('Participants', playerswd)
+                .addField('Battles played', data.clan.battlesPlayed,true)
+              	.addField('Wins', data.clan.wins,true)
+                .addField('Crowns', data.clan.crowns,true)
+                .addField('Ranks', clanranks)
+              	//.addField('Inline field title', 'Some value here', true)
+              	//.addField('Inline field title', 'Some value here', true)
+              	//.addField('Regular field title', 'Some value here')
+              	//.addBlankField()
+              	.setTimestamp();
+              msg.channel.send(infoEmbedwd);
+              break;
+              default:
+              botmsg+="Unknown response from server";
+              msg.channel.send(botmsg);
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+      break;/*
+      case 'crchannel':
+        msg.guild.createChannel('clash-royale', {type: 'text', parent: "681436879216050185", reason: "Clash Royale Channel created as per request",
+        permissionOverwrites: [{
+          id: msg.author,
+          allow: ['MANAGE_CHANNELS']
+        }] })
+          .then(console.log)
+          .catch(console.error);
+      break;*/
+      case 'doghaha':
+        msg.channel.send(client.emojis.get("716239626909777970").toString());
       break;
     }
   }else if(msg.content.startsWith("lemme ")&&msg.author.id=="531822031059288074"){
@@ -414,8 +803,22 @@ client.on('message', msg => {
     if(!maverick)return;
     msg.delete();
   }
-  if(msg.content.toLowerCase().includes("aov")||msg.content.toLowerCase().includes("a0v")||msg.content.toLowerCase().includes("@0v")||msg.content.toLowerCase().includes("@ov")||msg.content.toLowerCase().includes("a o v")||msg.content.toLowerCase().includes("arena of")||msg.content.toLowerCase().includes("arena 0f val0r")||msg.content.toLowerCase().includes("a.o.v")&&(!msg.content.toLowerCase().includes("aov is shit"))&&(!msg.content.toLowerCase().includes("delete aov"))&&(!msg.content.toLowerCase().includes("don't aov"))&&(!msg.content.toLowerCase().includes("don't play aov"))&&(!msg.content.toLowerCase().includes("don't want to play aov"))&&(!msg.content.toLowerCase().includes("no one wants to play aov"))&&(!msg.content.toLowerCase().includes("fuck aov"))&&(!msg.content.toLowerCase().includes("fk aov"))){
-    if(msg.channel.id==="681436538810400769"||msg.member.roles.some(role => role.name === 'Bot Developer')||msg.author.id=="531822031059288074")return;
+  if(msg.content.match(/[aàáâäæãåā@ａ]+\s*[oôöòóœøōõ0ｏ]+\s*[vｖ]+/i)||msg.content.match(/arena\s*of\s*valor/i)||msg.content.match(/(傳說|傳決對說)/i)||msg.content.match(/伝説/i)){
+    for(let i=0;i<aovbypass.length;i++){
+      if(msg.member.roles.some(role => role.name === aovbypass[i]))return;
+    }
+    if(msg.content.match(/don'?t( play)? aov/i)||msg.content.match(/aov( is)? shit/i))return;
+    msg.delete();
+  }
+});
+
+client.on("messageUpdate",(oldmsg,msg)=>{
+  //console.log(msg.content);
+  for(let i=0;i<aovbypass.length;i++){
+    if(msg.member.roles.some(role => role.name === aovbypass[i]))return;
+  }
+  if(msg.content.match(/don'?t( play )?aov/i)||msg.content.match(/aov( is )?shit/i))return;
+  if(msg.content.match(/[aàáâäæãåā@ａ]+(\s|\.)*[oôöòóœøōõ0ｏ]+(\s|\.)*[vｖ]+/i)||msg.content.match(/arena\s*of\s*valor/i)||msg.content.match(/(傳說|傳決對說)/i)||msg.content.match(/伝説/i)){
     msg.delete();
   }
 });
@@ -460,16 +863,166 @@ app.post('/send-nomic', (req,res) => {
   client.channels.find(x => x.name === 'no-mic').send(req.body.message);res.json({response: 200, message: req.body.message});
 });
 app.post('/send-botan', (req,res) => {
-  client.channels.find(x => x.name === 'bot-announcements').send(req.body.message);res.json({response: 200, message: req.body.message});
+  client.channels.find(x => x.name === 'announcements').send(req.body.message);res.json({response: 200, message: req.body.message});
 });
 app.get('/guilds', (req,res) => {
   res.json(Array.from(client.guilds.keys()));
   //console.log(client.guilds);
   //res.send('<!doctype html>\n<html>\n  <head>\n    <title>Guilds</title>\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n  </head>\n  <body>\n  </body>\n</html>');
 });
+app.get('/aovbypass', (req,res) => {
+  res.json(aovbypass);
+});
+app.post('/aovbypass', (req,res)=>{
+  aovbypass.push(req.param.role);
+  res.json({role: req.params.role});
+});
 app.get('/ping', (req,res)=>{res.json({response: 200, ping: client.ping});});
 app.get('/status', (req,res)=>{res.json({response: 200, status: client.status, parsedStatus: statusCode[client.status]});});
 app.get('/resetcooldown/:id',(req,res)=>{res.status(405);res.set("Allow", "POST");res.json({response: 405, error: "Method not allowed. Please use POST method for this path."})});
 app.post('/resetcooldown/:id',(req,res)=>{res.json({response: 200, userid: req.params.id, cooldown: 0, oldcooldown: tenorCooldown[req.params.id]});tenorCooldown[req.params.id]=0;});
 app.get('/cooldown/:id',(req,res)=>{if(isNaN(tenorCooldown[req.params.id])){tenorCooldown[req.params.id]=0;}res.json({response: 200, userid: req.params.id, cooldown: tenorCooldown[req.params.id]})});
+app.get('/client',(req,res)=>{
+  let guilds = Array.from(client.guilds.keys());
+  let response = "";
+  response+=`<!DOCTYPE html><html><head><title>Discord</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><ul>`;
+  for(let i=0;i<guilds.length;i++){
+    console.log(client.guilds.get(guilds[i]).name);
+    response+=`<li><a href="/guild/${guilds[i]}">${client.guilds.get(guilds[i]).name}</a></li>`;
+  }
+  response+="</ul></body></html>";
+  res.send(response);
+});
+app.get('/guild/:id',(req,res)=>{
+  let response = "";
+  response+=`<!DOCTYPE html><html><head><title>Discord</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><p><a href="/client">&lt; Back</a></p>`;
+  response+=`<h1>${client.guilds.get(req.params.id).name}</h1><ul>`;
+  let channels = client.guilds.get(req.params.id).channels;
+  let channelsArray = Array.from(channels.keys());
+  for(let i=0;i<channelsArray.length;i++){
+    switch(channels.get(channelsArray[i]).type){
+      case 'voice':
+      response+="";
+      break;
+      case 'category':
+      response+=`<li>${channels.get(channelsArray[i]).name}</li>`;
+      break;
+      default:
+      response+=`<li><a href="/channel/${channelsArray[i]}">#${channels.get(channelsArray[i]).name}</a></li>`;
+      break;
+    }
+  }
+  response+='</ul></body></html>';
+  res.send(response)
+});
+app.get('/channel/:id',(req,res)=>{
+  let response = "";
+  let channel = client.channels.get(req.params.id);
+  response+=`<!DOCTYPE html><html><head><title>Discord</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><p><a href="javascript:window.history.back()">&lt; Back</a></p>`;
+  switch(channel.type){
+    case 'text':
+      //console.log(Array.from(channel.messages.keys()));
+      response+=`<h1>#${channel.name}</h1></body></html>`;
+      response+=`<div><button onclick="toggleTyping();">Toggle typing</button><span>Typing: <span>${channel.typing}</span></div>`
+      response+=`<div><label for="message">Message Text</label><br><textarea id="message" name="message" rows="25" cols="100"></textarea><br><!--
+            --><button onclick="sendMsg();">Send</button></div>`;
+      response+=`<script>
+      const channelId = "${req.params.id}";
+const xhr = new XMLHttpRequest();
+function sendMsg(){
+xhr.open("POST", '/send-client', true);
+
+//Send the proper header information along with the request
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+xhr.onreadystatechange = function() { // Call a function when the state changes.
+    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+        console.log(this.response);
+    }
+}
+xhr.send(\`id=\${channelId}&msg=\${document.getElementById("message").value}\`);}
+function toggleTyping(){
+  xhr.open("POST", '/toggle-typing', true);
+
+  //Send the proper header information along with the request
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  xhr.onreadystatechange = function() { // Call a function when the state changes.
+      if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+          console.log(this.response);
+      }
+  }
+  xhr.send(\`id=\${channelId}\`);
+}</script>`;
+
+    break;
+    default:
+    response+="This type of channel is not supported.";
+    break;
+  }
+  response+="</body></html>";
+  res.send(response)
+});
+app.get('/messages/:id',(req,res)=>{
+  let channel = client.channels.get(req.params.id);
+  let response = {};
+  channel.fetchMessages({ limit: 20 }).then(msg=>{
+    response.size=msg.size;
+    response.msgs=[];
+    //console.log(msg);
+    msgs = Array.from(msg.keys());
+    for(let i=0;i<msgs.length;i++){
+      response.msgs[i]={id:msgs[i],content:msg.get(msgs[i]).content,user:msg.get(msgs[i]).author.username+"#"+msg.get(msgs[i]).author.discriminator};
+      if(msg.get(msgs[i]).embeds!=0){
+        response.msgs[i].embeds={type:msg.get(msgs[i]).embeds[0].type,title:msg.get(msgs[i]).embeds[0].title,description:msg.get(msgs[i]).embeds[0].description,url:msg.get(msgs[i]).embeds[0].url,color:msg.get(msgs[i]).embeds[0].color};
+      }else{
+        response.msgs[i].embeds=false;
+      }
+      console.log(response.msgs[i]);
+    }
+    console.log(response);
+    res.json(response);
+  });
+});
+/*app.get('/messages/:id',(req,res)=>{
+  let channel = client.channels.get(req.params.id);
+  console.log(Array.from(channel.messages.keys()));
+  res.send(Array.from(channel.messages.keys()));
+});*/
+app.post('/send-client',(req,res)=>{
+  let response = {};
+  let channel = client.channels.get(req.body.id);
+  if(channel.type!="text"){
+    console.log("not text channel");
+    response["error"] = "not-text-channel";
+    res.status(400);
+  }else{
+    channel.send(req.body.msg);
+    response["success"] = "true";
+    response["content"] = req.body.msg;
+    res.status(200);
+  }
+  res.json(response);
+});
+app.post('/toggle-typing',(req,res)=>{
+  let response={};
+  let channel = client.channels.get(req.body.id);
+  if(channel.type!="text"){
+    console.log("not text channel");
+    response["error"] = "not-text-channel";
+    res.status(400);
+  }else{
+    if(channel.typing){
+      channel.stopTyping(true);
+      response["success"] = "true";
+      response["action"] = "stop-typing";
+      response["force"] = "true";
+    }else{
+      channel.startTyping();
+      response["success"] = "true";
+      response["action"] = "start-typing";
+    }
+  }
+  res.json(response);
+});
 if(process.env.APIENABLED){app.listen(port, () => console.log(`WBCP listening on port ${port}!`));}

@@ -7,13 +7,22 @@ var c = [];
 var prefix = process.env.PREFIX;
 const wf = "wolf";
 const wk = "wolf king";
-const wb = "狼美人";
+const wb = "wolf beauty";
+const ws = "wolf seer";
+const whid = "hidden wolf";
+const wg = "守護狼";
+const sjg = "石像鬼";
 const vl = "village";
+const vg = "守護者";
 const wc = "witch";
 const se = "seer";
 const ht = "hunter";
 const id = "idiot";
 const kt = "knight";
+const fl = "fool";
+const gd = "guard";
+const tg = "tomb guard";
+const bse = "禁言長老";
 const whvl = "武漢民眾";
 const whwf = "帶菌者";
 const whse = "醫生";
@@ -30,11 +39,23 @@ roles["w2v2wsi"] = [wf,wf,vl,vl,wc,se,id];
 roles["w2v2wsh"] = [wf,wf,vl,vl,wc,se,ht];
 roles["wuhan-w2v2wsk"] = [whwf,whwf,whvl,whvl,whwc,whse,whkt];
 roles["w2v2wsk"] = [wf,wf,vl,vl,wc,se,kt];
+roles["wkw2wshk"] = [wk,wf,wf,wc,se,ht,kt];
 roles["meh"] = [wb,wf,vl,vl,vl,se,wc,id];
+roles["mek"] = [wk,wf,vl,vl,vl,se,wc,id];
 roles["meht"] = [wk,wf,wf,vl,vl,se,wc,ht];
+roles["fool"] = [wk,wf,wf,se,wc,ht,kt,fl];
+roles["我要曲線自爆"] = [wk,wf,wc,se,ht,id,gd,fl];
+roles["ur-ded"] = [wk,wf,wf,se,wc,ht,id,gd];
+roles["wkwbwwshig"] = [wk,wb,wf,wc,se,ht,id,gd];
 roles["w3v3wsh"] = [wf,wf,wf,vl,vl,vl,wc,se,ht];
+roles["uh-huh"] = [wk,wf,wf,vl,vl,vl,se,wc,ht,gd];
 roles["wkw2v3wshk"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,kt];
+roles["wkw2v3wshg"] = [wk,wf,wf,vl,vl,vl,wc,se,ht,gd];
 roles["wkw3v4wshk"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,kt];
+roles["wkw3v4wshg"] = [wk,wf,wf,wf,vl,vl,vl,vl,wc,se,ht,gd];
+roles["uh-huh12"] = [wk,wf,wf,wf,vl,vl,vl,vl,se,wc,ht,gd];
+roles["wswkwwshike"] = [ws,wk,wf,wc,se,ht,id,kt,bse];
+roles["rock"] = [sjg,wf,wf,wf,vl,vl,vl,vl,se,wc,ht,tg];
 var list = [];
 const helpEmbed = new Discord.RichEmbed()
     .setColor('#ffc800')
@@ -128,22 +149,11 @@ client.on('message', msg => {
         if (!msg.member.roles.some(role => role.name === 'MC')){msg.reply("you do not have sufficient permissions!"); return;} //||msg.guild.id!="653535903511216129"
         else {
           thisGuild=client.guilds.find(x => x.id === msg.guild.id);
-        switch (args[0]) {
-          case 'w2v2wsh':
-          case 'wuhan-w2v2wsh':
-          case 'w2v2wsk':
-          case 'w2v2wsi':
-          case 'meh':
-          case 'meht':
-          case 'w3v3wsh':
-          case 'wkw2v3wshk':
-          case 'wkw3v4wshk':
-          case '6':
-            sendroles(msg,args[0]);
-          break;
-          default:
+          if(typeof roles[args[0]]==="undefined"){
             msg.reply("invalid roles id! see #bot-documentation for help");
-        }
+          }else{
+            sendroles(msg,args[0]);
+          }
       }
       break;
       case 'listroles':
@@ -162,7 +172,7 @@ client.on('message', msg => {
       case 'endgame':
         if (!msg.member.roles.some(role => role.name === 'MC')){msg.reply("this command could only be used by MCs. ||GFY!||");return;}
         wdc[msg.guild.id]=client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === "狼人討論");
-        for(var i=0;i<12;i++){
+        for(let i=0;i<12;i++){
           wdc[msg.guild.id].overwritePermissions(
             msg.guild.roles.find(n => n.name === String(i+1)+'號'),
             { 'VIEW_CHANNEL': false, 'SEND_MESSAGES': false }
@@ -214,7 +224,7 @@ client.on('message', msg => {
     switch (cmd) {
       case 'day':
         if(typeof wfs[msg.guild.id]==="undefined"){return msg.reply("start a new game first!");}
-        for(var k=0;k<wfs[msg.guild.id].length;k++){
+        for(let k=0;k<wfs[msg.guild.id].length;k++){
           wdc[msg.guild.id].overwritePermissions(
             msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
             { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': false }
@@ -223,7 +233,7 @@ client.on('message', msg => {
       break;
       case 'night':
         if(typeof wfs[msg.guild.id]==="undefined"){return msg.reply("start a new game first!");}
-        for(var k=0;k<wfs[msg.guild.id].length;k++){
+        for(let k=0;k<wfs[msg.guild.id].length;k++){
           wdc[msg.guild.id].overwritePermissions(
             msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
             { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }

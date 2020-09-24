@@ -15,7 +15,7 @@ try {
       console.log(`Bot token: ${ans}`);
       if(regex.test(ans)){
         console.log(`Token seems valid, creating .env`);
-        const data="CLIENT_TOKEN="+ans+"\nRORG=\nPREFIX=!\nPORT=\nAPIAUTH=\nAPIENABLED=\nHWENABLED=";
+        const data=`CLIENT_TOKEN=${ans}\nDISCORD_TOKEN=${ans}\nRORG=\nPREFIX=!\nPORT=\nAPIAUTH=\nAPIENABLED=\nHWENABLED=`;
         fs.writeFile("./.env",data,function(e){if(e){return console.error(e)}});
         console.log("Done! You can now run node simple-bot.js to start the bot.");
       }else{

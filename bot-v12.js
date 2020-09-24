@@ -1,4 +1,4 @@
-const Discord = require("djs11");
+const Discord = require("discord.js");
 //const RandomOrg = require('random-org');// optional
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -93,7 +93,7 @@ let begActions = ["donated", "gave", "sent"];
 const statusCode = ["READY","CONNECTING","RECONNECTING","IDLE","NEARLY","DISCONNECTED"];
 //var rorg = new RandomOrg({ apiKey: process.env.RORG });//optional
 
-const helpEmbed = new Discord.RichEmbed()
+const helpEmbed = new Discord.MessageEmbed()
     .setColor('#ffc800')
     .setTitle('Werewolf Bot Help')
     .addField('Current Prefix', prefix)
@@ -114,9 +114,9 @@ const waitBefore = async (tm, fn) => {await sleep(tm*1000);fn()}
 const sendroles = (msg,code) => {
   roles[code] = util.shuffle(roles[code]);
   for(let i=0;i<roles[code].length;i++){
-    c[i]=thisGuild.channels.find(x => x.name === String(i+1)+'號');
+    c[i]=thisGuild.channels.cache.find(x => x.name === String(i+1)+'號');
   }
-  wdc[msg.guild.id] = thisGuild.channels.find(x => x.name === "狼人討論");
+  wdc[msg.guild.id] = thisGuild.channels.cache.find(x => x.name === "狼人討論");
   list[msg.guild.id] = "";
   wfs[msg.guild.id]=[];
   for(let j=0;j<roles[code].length;j++){
@@ -131,15 +131,15 @@ const sendroles = (msg,code) => {
   }
   for(let k=0;k<wfs[msg.guild.id].length;k++){
     wdc[msg.guild.id].overwritePermissions(
-      msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
+      msg.guild.roles.cache.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
       { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
     );
   }
-  thisGuild.channels.find(x => x.name === 'bot-log').send(roles[code].length);
-  thisGuild.channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
-  thisGuild.channels.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
+  thisGuild.channels.cache.find(x => x.name === 'bot-log').send(roles[code].length);
+  thisGuild.channels.cache.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+  thisGuild.channels.cache.find(x => x.name === 'bot-roles').send(list[msg.guild.id]);
   msg.channel.send(":white_check_mark: Roles have been sent! :zzz: everyone sleep");
-  thisGuild.channels.find(x => x.name === String(parseInt(seer[msg.guild.id])+1)+'號').send("Good evening, seer! You can check other players and see if they are good (villagers or gods) or bad (wolves). You can check one player per night. To check a player, use the command /check as follows:\n```/check <no.>```where `<no.>` is the number of the player you want to check.");
+  thisGuild.channels.cache.find(x => x.name === String(parseInt(seer[msg.guild.id])+1)+'號').send("Good evening, seer! You can check other players and see if they are good (villagers or gods) or bad (wolves). You can check one player per night. To check a player, use the command /check as follows:\n```/check <no.>```where `<no.>` is the number of the player you want to check.");
   waitBefore(5, () => {wdc[msg.guild.id].send("Good evening, wolves! Your mission is to kill the good people. To do so, use the command /kill as follows:\n```/kill <no.>```where `<no.>` is the number of the player you want to kill.\n\n狼人們，晚上好！你們的任務是要殺死好人。想要達成任務，你們可以使用指令/kill，使用方法如下：```/kill <no.>````<no.>`為你們想殺的玩家號碼。");});
 }
 
@@ -153,8 +153,8 @@ client.on("ready", () => {
   memeusers = JSON.parse(fs.readFileSync('./memebot.json'));
   console.log(memeusers["531822031059288074"].wallet);
   console.log(memeusers["531822031059288074"].bank);
-  //client.channels.find(x => x.name === 'manage').send("Reconnected!");
-  //client.channels.find(x => x.name === 'bot').send("Reconnected!"); //ugh
+  //client.channels.cache.find(x => x.name === 'manage').send("Reconnected!");
+  //client.channels.cache.find(x => x.name === 'bot').send("Reconnected!"); //ugh
 });
 
 client.on('message', msg => {
@@ -360,7 +360,7 @@ client.on('message', msg => {
         console.log(richest);
         let richmsg = "Richest users in this server\n";
         for(let i=0;i<richest.length;i++){
-          richmsg+=`${i+1}. ${client.users.get(richest[i].id).username}#${client.users.get(richest[i].id).discriminator} - ${richest[i].wallet}\n`;
+          richmsg+=`${i+1}. ${client.users.cache.get(richest[i].id).username}#${client.users.cache.get(richest[i].id).discriminator} - ${richest[i].wallet}\n`;
         }
         msg.channel.send(richmsg);
       break;
@@ -417,7 +417,7 @@ client.on('message', msg => {
         msg.channel.setRateLimitPerUser(3);
       break;*/
       case 'msgs':
-        console.log(msg.channel.fetchMessages({ limit: 20 }));msg.delete();
+        console.log(msg.channel.messages.fetch({ limit: 20 }));msg.delete();
         msg.channel.send("done").then(msg=>msg.delete(3000));
       break;
       case 'help':
@@ -435,7 +435,7 @@ client.on('message', msg => {
       });*/
         if (!msg.member.roles.some(role => role.name === 'MC')){msg.reply("you do not have sufficient permissions!"); return;} //||msg.guild.id!="653535903511216129"
         else {
-          thisGuild=client.guilds.find(x => x.id === msg.guild.id);
+          thisGuild=client.guilds.cache.find(x => x.id === msg.guild.id);
         switch (args[0]) {
           case 'w2v2wsh':
           case 'wuhan-w2v2wsh':
@@ -471,7 +471,7 @@ client.on('message', msg => {
       case 'rolelist':
         if(list[msg.guild.id]){
           if(msg.channel.name=="spectators"){
-            client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === 'spectators').send(list[msg.guild.id]);
+            msg.guild.channels.cache.find(x => x.name === 'spectators').send(list[msg.guild.id]);
           }else{
             msg.reply("NOPE! ||gfy|| ");
           }
@@ -481,14 +481,14 @@ client.on('message', msg => {
       break;
       case 'endgame':
         if (!msg.member.roles.some(role => role.name === 'MC')){msg.reply("this command could only be used by MCs. ||GFY!||");return;}
-        wdc[msg.guild.id]=client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === "狼人討論");
+        wdc[msg.guild.id]=msg.guild.channels.cache.find(x => x.name === "狼人討論");
         for(var i=0;i<12;i++){
           wdc[msg.guild.id].overwritePermissions(
-            msg.guild.roles.find(n => n.name === String(i+1)+'號'),
+            msg.guild.roles.cache.find(n => n.name === String(i+1)+'號'),
             { 'VIEW_CHANNEL': false, 'SEND_MESSAGES': false }
           );
         }
-        msg.guild.members.forEach((member) => member.removeRole(msg.guild.roles.find(x=>x.name==="Dead")));
+        msg.guild.members.forEach((member) => member.roles.remove(msg.guild.roles.cache.find(x=>x.name==="Dead")));
         msg.reply("done! If you want me to send out the role list **here**, click on the :white_check_mark: reaction. Otherwise, click the :negative_squared_cross_mark: reaction.").then((botmsg)=>{
           botmsg.react('✅').then(()=>{botmsg.react('❎')});
           const filter = (reaction,user) => {
@@ -502,8 +502,8 @@ client.on('message', msg => {
           			if(list[msg.guild.id]){msg.channel.send(list[msg.guild.id]);botmsg.edit(`<@${msg.author.id}>, done!`);botmsg.clearReactions();}
                 else{
                   msg.reply("no WWE games initiated after the bot reconnected! Fetching list from another source...").then((newmsg)=>{
-                    client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === "bot-roles")
-                      .fetchMessages({limit:1})
+                    msg.guild.channels.cache.find(x => x.name === "bot-roles").messages
+                      .fetch({limit:1})
                       .then(messages => {msg.channel.send(messages.first().content);botmsg.edit(`<@${msg.author.id}>, done!`);botmsg.clearReactions();newmsg.delete();});
                   });
                 }
@@ -558,7 +558,7 @@ client.on('message', msg => {
               for(let i=0;i<data.clan.participants;i++){
                 players+=`${data.participants[i].name}\n`;
               }
-              const infoEmbed = new Discord.RichEmbed()
+              const infoEmbed = new Discord.MessageEmbed()
               	.setColor('#0099ff')
               	.setTitle('CR Clan War Status')
               	.setAuthor(data.clan.name,`https://cdn.statsroyale.com/images/badges/${data.clan.badgeId}.png`)
@@ -585,7 +585,7 @@ client.on('message', msg => {
               for(let i=0;i<data.clans.length;i++){
                 clanranks+=`${i+1}. ${data.clans[i].name}\n`;
               }
-              const infoEmbedwd = new Discord.RichEmbed()
+              const infoEmbedwd = new Discord.MessageEmbed()
               	.setColor('#0099ff')
               	.setTitle('CR Clan War Status')
               	.setAuthor(data.clan.name,`https://cdn.statsroyale.com/images/badges/${data.clan.badgeId}.png`)
@@ -623,7 +623,7 @@ client.on('message', msg => {
           .catch(console.error);
       break;*/
       case 'doghaha':
-        msg.channel.send(client.emojis.get("716239626909777970").toString());
+        msg.channel.send(client.emojis.cache.get("716239626909777970").toString());
       break;
     }
   }else if(msg.content.startsWith("lemme ")&&msg.author.id=="531822031059288074"){
@@ -631,12 +631,12 @@ client.on('message', msg => {
     if(!vc){return msg.reply("get into a vc first");}
     else{
       switch(msg.content.replace(/lemme /,"")){
-        case 'add my bot into vc and play a random mp3 from my computer':
+        /* meh too lazy to fix case 'add my bot into vc and play a random mp3 from my computer':
           vc.join().then(con=>{
             let dispatcher = con.playFile('./shostakovich.mp3');
             dispatcher.on("end",end=>{vc.leave()})
           }).catch(e => console.error(e))
-        break;
+        break;*/
         case 'simply add my bot into vc':
           vc.join();
         break;
@@ -672,7 +672,7 @@ client.on('message', msg => {
         if(typeof wfs[msg.guild.id]==="undefined"){return msg.reply("start a new game first!");}
         for(var k=0;k<wfs[msg.guild.id].length;k++){
           wdc[msg.guild.id].overwritePermissions(
-            msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
+            msg.guild.roles.cache.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
             { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': false }
           );
         }
@@ -681,7 +681,7 @@ client.on('message', msg => {
         if(typeof wfs[msg.guild.id]==="undefined"){return msg.reply("start a new game first!");}
         for(var k=0;k<wfs[msg.guild.id].length;k++){
           wdc[msg.guild.id].overwritePermissions(
-            msg.guild.roles.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
+            msg.guild.roles.cache.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
             { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
           );
         }
@@ -721,8 +721,6 @@ client.on('message', msg => {
       });
     }else if(msg.content.match(/\d?\d\.\d?\dx?/i)&&(msg.content.toLowerCase().includes("ba")||msg.content.toLowerCase().includes("accounting")||msg.content.toLowerCase().includes("financial")||msg.content.toLowerCase().includes("business"))){
       msg.reply("Hi! Seems like you are asking a question related to BAFS! If you are looking for the answers of **FA1** Q"+msg.content.match(/(\d?\d\.\d?\d)x?/i)[0]+", use the command `!hw ba p fa1 "+msg.content.match(/(\d?\d\.\d?\d)x?/i)[1]+"`.");
-    }else if(msg.channel.id==="644812476382445569"&&msg.content.includes("遊戲結束")){
-      client.guilds.find(x => x.id === msg.guild.id).channels.find(x => x.name === "no-mic").send("MC, please use the command `!endgame` if the game has ended. Thank you!");
     }
   }else if(msg.channel.id==="683914657626718208"&&msg.author.id==="399817995314003970"){
     if(!maverick)return;
@@ -730,7 +728,7 @@ client.on('message', msg => {
   }
   if(msg.content.match(/[aàáâäæãåā@ａ]+\s*[oôöòóœøōõ0ｏ]+\s*[vｖ]+/i)||msg.content.match(/arena\s*of\s*valor/i)||msg.content.match(/(傳說|傳決對說)/i)||msg.content.match(/伝説/i)){
     for(let i=0;i<aovbypass.length;i++){
-      if(msg.member.roles.some(role => role.name === aovbypass[i]))return;
+      if(msg.member.roles.cache.some(role => role.name === aovbypass[i]))return;
     }
     if(msg.content.match(/don'?t( play)? aov/i)||msg.content.match(/aov( is)? shit/i))return;
     msg.delete();
@@ -740,7 +738,7 @@ client.on('message', msg => {
 client.on("messageUpdate",(oldmsg,msg)=>{
   //console.log(msg.content);
   for(let i=0;i<aovbypass.length;i++){
-    if(msg.member.roles.some(role => role.name === aovbypass[i]))return;
+    if(msg.member.roles.cache.some(role => role.name === aovbypass[i]))return;
   }
   if(msg.content.match(/don'?t( play )?aov/i)||msg.content.match(/aov( is )?shit/i))return;
   if(msg.content.match(/[aàáâäæãåā@ａ]+(\s|\.)*[oôöòóœøōõ0ｏ]+(\s|\.)*[vｖ]+/i)||msg.content.match(/arena\s*of\s*valor/i)||msg.content.match(/(傳說|傳決對說)/i)||msg.content.match(/伝説/i)){
@@ -774,18 +772,18 @@ if(!!process.env.APIAUTH){
   });
 }
 app.get('/', (req, res) => res.send('<!doctype html>\n<head>\n<title>WBCP backend</title>\n<meta name="viewport" content="width=device-width, initial-scale=1">\n</head>\n<body><h2>WBCP backend</h2><p>This is the backend API service for the <b>W</b>erewolf <b>B</b>ot <b>C</b>ontrol <b>P</b>anel. Visit github repo for more info.</p><h3>Quick Links</h3><ul><li><a href="/guilds.html">Joined Guilds</a></li><li><a href="/presence.html">Set Presence</a></li><li><a href="/send.html">Send a message</a></li></ul></body>'));
-app.get('/disconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Disconnected!");res.json({response: 200});});
-app.get('/reconnected', (req,res) => {client.channels.find(x => x.name === 'bot').send("Reconnected!");res.json({response: 200});});
+app.get('/disconnected', (req,res) => {client.channels.cache.find(x => x.name === 'bot').send("Disconnected!");res.json({response: 200});});
+app.get('/reconnected', (req,res) => {client.channels.cache.find(x => x.name === 'bot').send("Reconnected!");res.json({response: 200});});
 app.post('/presence', (req,res) => {res.json({presence: req.body.presence});client.user.setPresence({
   game: {
       name: req.body.presence
   }
 });});
 app.post('/send', (req,res) => {
-  client.channels.find(x => x.name === 'bot').send(req.body.message);res.json({response: 200, message: req.body.message});
+  client.channels.cache.find(x => x.name === 'bot').send(req.body.message);res.json({response: 200, message: req.body.message});
 });
 app.get('/guilds', (req,res) => {
-  res.json(Array.from(client.guilds.keys()));
+  res.json(Array.from(client.guilds.cache.keys()));
   //console.log(client.guilds);
   //res.send('<!doctype html>\n<html>\n  <head>\n    <title>Guilds</title>\n    <meta name="viewport" content="width=device-width, initial-scale=1">\n  </head>\n  <body>\n  </body>\n</html>');
 });
@@ -802,12 +800,12 @@ app.get('/resetcooldown/:id',(req,res)=>{res.status(405);res.set("Allow", "POST"
 app.post('/resetcooldown/:id',(req,res)=>{res.json({response: 200, userid: req.params.id, cooldown: 0, oldcooldown: tenorCooldown[req.params.id]});tenorCooldown[req.params.id]=0;});
 app.get('/cooldown/:id',(req,res)=>{if(isNaN(tenorCooldown[req.params.id])){tenorCooldown[req.params.id]=0;}res.json({response: 200, userid: req.params.id, cooldown: tenorCooldown[req.params.id]})});
 app.get('/client',(req,res)=>{
-  let guilds = Array.from(client.guilds.keys());
+  let guilds = Array.from(client.guilds.cache.keys());
   let response = "";
   response+=`<!DOCTYPE html><html><head><title>Discord</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><ul>`;
   for(let i=0;i<guilds.length;i++){
-    console.log(client.guilds.get(guilds[i]).name);
-    response+=`<li><a href="/guild/${guilds[i]}">${client.guilds.get(guilds[i]).name}</a></li>`;
+    console.log(client.guilds.cache.get(guilds[i]).name);
+    response+=`<li><a href="/guild/${guilds[i]}">${client.guilds.cache.get(guilds[i]).name}</a></li>`;
   }
   response+="</ul></body></html>";
   res.send(response);
@@ -815,19 +813,19 @@ app.get('/client',(req,res)=>{
 app.get('/guild/:id',(req,res)=>{
   let response = "";
   response+=`<!DOCTYPE html><html><head><title>Discord</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><p><a href="/client">&lt; Back</a></p>`;
-  response+=`<h1>${client.guilds.get(req.params.id).name}</h1><ul>`;
-  let channels = client.guilds.get(req.params.id).channels;
-  let channelsArray = Array.from(channels.keys());
+  response+=`<h1>${client.guilds.cache.get(req.params.id).name}</h1><ul>`;
+  let channels = client.guilds.cache.get(req.params.id).channels;
+  let channelsArray = Array.from(channels.cache.keys());
   for(let i=0;i<channelsArray.length;i++){
-    switch(channels.get(channelsArray[i]).type){
+    switch(channels.cache.get(channelsArray[i]).type){
       case 'voice':
       response+="";
       break;
       case 'category':
-      response+=`<li>${channels.get(channelsArray[i]).name}</li>`;
+      response+=`<li>${channels.cache.get(channelsArray[i]).name}</li>`;
       break;
       default:
-      response+=`<li><a href="/channel/${channelsArray[i]}">#${channels.get(channelsArray[i]).name}</a></li>`;
+      response+=`<li><a href="/channel/${channelsArray[i]}">#${channels.cache.get(channelsArray[i]).name}</a></li>`;
       break;
     }
   }
@@ -836,7 +834,7 @@ app.get('/guild/:id',(req,res)=>{
 });
 app.get('/channel/:id',(req,res)=>{
   let response = "";
-  let channel = client.channels.get(req.params.id);
+  let channel = client.channels.cache.get(req.params.id);
   response+=`<!DOCTYPE html><html><head><title>Discord</title><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><p><a href="javascript:window.history.back()">&lt; Back</a></p>`;
   switch(channel.type){
     case 'text':
@@ -882,9 +880,9 @@ function toggleTyping(){
   res.send(response)
 });
 app.get('/messages/:id',(req,res)=>{
-  let channel = client.channels.get(req.params.id);
+  let channel = client.channels.cache.get(req.params.id);
   let response = {};
-  channel.fetchMessages({ limit: 20 }).then(msg=>{
+  channel.messages.fetch({ limit: 20 }).then(msg=>{
     response.size=msg.size;
     response.msgs=[];
     //console.log(msg);
@@ -909,7 +907,7 @@ app.get('/messages/:id',(req,res)=>{
 });*/
 app.post('/send-client',(req,res)=>{
   let response = {};
-  let channel = client.channels.get(req.body.id);
+  let channel = client.channels.cache.get(req.body.id);
   if(channel.type!="text"){
     console.log("not text channel");
     response["error"] = "not-text-channel";
@@ -924,7 +922,7 @@ app.post('/send-client',(req,res)=>{
 });
 app.post('/toggle-typing',(req,res)=>{
   let response={};
-  let channel = client.channels.get(req.body.id);
+  let channel = client.channels.cache.get(req.body.id);
   if(channel.type!="text"){
     console.log("not text channel");
     response["error"] = "not-text-channel";

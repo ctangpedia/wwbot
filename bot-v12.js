@@ -147,7 +147,7 @@ client.on("ready", () => {
   console.log(new Date()+` Logged in as ${client.user.tag}!`);
   client.user.setPresence({
     game: {
-        name: 'help: https://wwbot.ctptools.ga/ww/usage.html'
+        name: 'discord.js v12'
     }
   });
   memeusers = JSON.parse(fs.readFileSync('./memebot.json'));
@@ -418,7 +418,7 @@ client.on('message', msg => {
       break;*/
       case 'msgs':
         console.log(msg.channel.messages.fetch({ limit: 20 }));msg.delete();
-        msg.channel.send("done").then(msg=>msg.delete(3000));
+        msg.channel.send("done").then(msg=>msg.delete({timeout:3000}));
       break;
       case 'help':
       case 'commands':
@@ -521,7 +521,7 @@ client.on('message', msg => {
         if (msg.author.id=="395405722566918144"||msg.author.id=="531822031059288074"||msg.member.roles.some(role => role.name === 'MC')){
           if(!isNaN(parseInt(args[0]))&&(parseInt(args[0]))<101){
             msg.channel.bulkDelete(args[0]).then(() => {
-              msg.channel.send("Deleted "+args[0]+" messages. (This message will self-delete in 3 seconds.)").then(msg => msg.delete(3000));
+              msg.channel.send("Deleted "+args[0]+" messages. (This message will self-delete in 3 seconds.)").then(msg => msg.delete({timeout:3000}));
             });
           }else{
             msg.channel.send("Usage Instructions:\n!purge [number of messages you intend to delete in bulk]");

@@ -4,3 +4,4 @@ hw
 .env
 *.log
 memebot.json
+*refactor*

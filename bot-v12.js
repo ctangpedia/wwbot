@@ -130,10 +130,10 @@ const sendroles = (msg,code) => {
     list[msg.guild.id] += String(j+1)+". "+roles[code][j]+"\n";
   }
   for(let k=0;k<wfs[msg.guild.id].length;k++){
-    wdc[msg.guild.id].overwritePermissions(
+    wdc[msg.guild.id].updateOverwrite(
       msg.guild.roles.cache.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
       { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
-    );
+    ).catch(console.error);
   }
   thisGuild.channels.cache.find(x => x.name === 'bot-log').send(roles[code].length);
   thisGuild.channels.cache.find(x => x.name === 'spectators').send(list[msg.guild.id]);
@@ -433,7 +433,7 @@ client.on('message', msg => {
       .then(function(result) {
         console.log(result.random.data);
       });*/
-        if (!msg.member.roles.some(role => role.name === 'MC')){msg.reply("you do not have sufficient permissions!"); return;} //||msg.guild.id!="653535903511216129"
+        if (!msg.member.roles.cache.some(role => role.name === 'MC')){msg.reply("you do not have sufficient permissions!"); return;} //||msg.guild.id!="653535903511216129"
         else {
           thisGuild=client.guilds.cache.find(x => x.id === msg.guild.id);
         switch (args[0]) {
@@ -480,15 +480,15 @@ client.on('message', msg => {
         }
       break;
       case 'endgame':
-        if (!msg.member.roles.some(role => role.name === 'MC')){msg.reply("this command could only be used by MCs. ||GFY!||");return;}
+        if (!msg.member.roles.cache.some(role => role.name === 'MC')){msg.reply("this command could only be used by MCs. ||GFY!||");return;}
         wdc[msg.guild.id]=msg.guild.channels.cache.find(x => x.name === "狼人討論");
         for(var i=0;i<12;i++){
-          wdc[msg.guild.id].overwritePermissions(
+          wdc[msg.guild.id].updateOverwrite(
             msg.guild.roles.cache.find(n => n.name === String(i+1)+'號'),
             { 'VIEW_CHANNEL': false, 'SEND_MESSAGES': false }
           );
         }
-        msg.guild.members.forEach((member) => member.roles.remove(msg.guild.roles.cache.find(x=>x.name==="Dead")));
+        msg.guild.members.cache.forEach((member) => member.roles.remove(msg.guild.roles.cache.find(x=>x.name==="Dead")));
         msg.reply("done! If you want me to send out the role list **here**, click on the :white_check_mark: reaction. Otherwise, click the :negative_squared_cross_mark: reaction.").then((botmsg)=>{
           botmsg.react('✅').then(()=>{botmsg.react('❎')});
           const filter = (reaction,user) => {
@@ -499,16 +499,16 @@ client.on('message', msg => {
           		const reaction = collected.first();
 
           		if (reaction.emoji.name === '✅') {
-          			if(list[msg.guild.id]){msg.channel.send(list[msg.guild.id]);botmsg.edit(`<@${msg.author.id}>, done!`);botmsg.clearReactions();}
+          			if(list[msg.guild.id]){msg.channel.send(list[msg.guild.id]);botmsg.edit(`<@${msg.author.id}>, done!`);botmsg.reactions.removeAll();}
                 else{
                   msg.reply("no WWE games initiated after the bot reconnected! Fetching list from another source...").then((newmsg)=>{
                     msg.guild.channels.cache.find(x => x.name === "bot-roles").messages
                       .fetch({limit:1})
-                      .then(messages => {msg.channel.send(messages.first().content);botmsg.edit(`<@${msg.author.id}>, done!`);botmsg.clearReactions();newmsg.delete();});
+                      .then(messages => {msg.channel.send(messages.first().content);botmsg.edit(`<@${msg.author.id}>, done!`);botmsg.reactions.removeAll();newmsg.delete();});
                   });
                 }
           		} else {
-          			botmsg.edit(`<@${msg.author.id}>, done! You can view the role list in <#645150806848438303>`).then(msg=>msg.clearReactions()).catch(console.error);//msg.reply('never mind. You can still find the role list in <#645150806848438303>');//... in #spectators
+          			botmsg.edit(`<@${msg.author.id}>, done! You can view the role list in <#645150806848438303>`).then(msg=>msg.reactions.removeAll()).catch(console.error);//msg.reply('never mind. You can still find the role list in <#645150806848438303>');//... in #spectators
           		}
           	})
           	.catch(collected => {
@@ -518,7 +518,7 @@ client.on('message', msg => {
       break;
       case 'purge':
         //if (msg.guild.id=="629570161032036373"){msg.reply("this command has been temporarily disabled on this server by the author.");return;}
-        if (msg.author.id=="395405722566918144"||msg.author.id=="531822031059288074"||msg.member.roles.some(role => role.name === 'MC')){
+        if (msg.author.id=="395405722566918144"||msg.author.id=="531822031059288074"||msg.member.roles.cache.some(role => role.name === 'MC')){
           if(!isNaN(parseInt(args[0]))&&(parseInt(args[0]))<101){
             msg.channel.bulkDelete(args[0]).then(() => {
               msg.channel.send("Deleted "+args[0]+" messages. (This message will self-delete in 3 seconds.)").then(msg => msg.delete({timeout:3000}));
@@ -532,11 +532,11 @@ client.on('message', msg => {
         msg.reply(msg.author.id);
       break;
       case 'reset-cooldown':
-        if (!msg.member.roles.some(role => role.name === 'Admin')){msg.reply("this command could only be used by admins. ||GFY!||");return;}
+        if (!msg.member.roles.cache.some(role => role.name === 'Admin')){msg.reply("this command could only be used by admins. ||GFY!||");return;}
         if(args[0]){tenorCooldown[args[0]]=0;}
       break;
       case 'maverick':
-        if (!msg.member.roles.some(role => role.name === 'Admin')){msg.reply("this command could only be used by admins. ||GFY!||");msg.delete();return;}
+        if (!msg.member.roles.cache.some(role => role.name === 'Admin')){msg.reply("this command could only be used by admins. ||GFY!||");msg.delete();return;}
         maverick=!maverick;
         msg.channel.send(maverick);
         msg.delete();
@@ -671,7 +671,7 @@ client.on('message', msg => {
       case 'day':
         if(typeof wfs[msg.guild.id]==="undefined"){return msg.reply("start a new game first!");}
         for(var k=0;k<wfs[msg.guild.id].length;k++){
-          wdc[msg.guild.id].overwritePermissions(
+          wdc[msg.guild.id].updateOverwrite(
             msg.guild.roles.cache.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
             { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': false }
           );
@@ -680,7 +680,7 @@ client.on('message', msg => {
       case 'night':
         if(typeof wfs[msg.guild.id]==="undefined"){return msg.reply("start a new game first!");}
         for(var k=0;k<wfs[msg.guild.id].length;k++){
-          wdc[msg.guild.id].overwritePermissions(
+          wdc[msg.guild.id].updateOverwrite(
             msg.guild.roles.cache.find(n => n.name === String(wfs[msg.guild.id][k]+1)+'號'),
             { 'VIEW_CHANNEL': true, 'SEND_MESSAGES': true }
           );
@@ -709,10 +709,10 @@ client.on('message', msg => {
             const reaction = collected.first();
 
             if (reaction.emoji.name === '✅') {
-              botmsg.edit(`<@${msg.author.id}>, Hi! Seems like you are asking a question related to maths! I might be able to help, but you would have to follow a format I can recognize, so that I can give detailed steps and the correct solution. Head to https://wwbot.github.io/ww/usage.html to see how you can ask me a maths question ;)`).then(msg=>msg.clearReactions()).catch(console.error);
+              botmsg.edit(`<@${msg.author.id}>, Hi! Seems like you are asking a question related to maths! I might be able to help, but you would have to follow a format I can recognize, so that I can give detailed steps and the correct solution. Head to https://wwbot.github.io/ww/usage.html to see how you can ask me a maths question ;)`).then(msg=>msg.reactions.removeAll()).catch(console.error);
             } else {
               showHWHelp["maths"][msg.author.id]=false;
-              botmsg.edit(`<@${msg.author.id}>, ok, I won't send you this message again unless I restart.`).then(msg=>msg.clearReactions()).catch(console.error);
+              botmsg.edit(`<@${msg.author.id}>, ok, I won't send you this message again unless I restart.`).then(msg=>msg.reactions.removeAll()).catch(console.error);
             }
           })
           .catch(collected => {

@@ -15,7 +15,7 @@
     "discord.js": "npm:discord.js@^12.3.1",
     "djs11": "npm:discord.js@^11.6.4",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "ffmpeg-binaries": "^4.0.0",
     "node-opus": "^0.3.3",
     "random-org": "^2.0.1"
